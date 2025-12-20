@@ -1,0 +1,8 @@
+# Config file for tools like Black and isort.
+# Keeps code style consistent.
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
