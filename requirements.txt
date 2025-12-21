@@ -1,0 +1,10 @@
+# Lists the Python packages needed to run the project.
+# GitHub Actions uses this file to install everything before running tests.
+# Any new tools or libraries to the project, need to be added here for the CI to work.
+
+pytest
+playwright
+ruff
+black
+isort
+pre-commit
