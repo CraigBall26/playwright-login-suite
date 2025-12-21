@@ -1,0 +1,43 @@
+# CI workflow to keep the project healthy.
+# Tells GitHub to automatically check project whenever push or pull request is made.
+# Ensures code quality with Ruff and runs tests with pytest.
+
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the code.
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Set up Python.
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Install dependencies.
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pre-commit
+
+      # Run ruff linting.
+      - name: Ruff lint
+        run: ruff check .
+
+      # Run ruff formatting check.
+      - name: Ruff format check
+        run: ruff format --check .
+
+      # Run tests.
+      - name: Run tests
+        run: pytest
