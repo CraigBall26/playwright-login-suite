@@ -8,36 +8,42 @@ on:
   push:
   pull_request:
 
+ # Groups all the steps for the workflow.   
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    # Individual commands to run as part of the workflow
     steps:
-      # Check out the code.
-      - name: Checkout
+      # Step 1: Checkout the repository code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Set up Python.
+      # Step 2: Install the version of Python the project uses
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      # Install dependencies.
+      # Step 3: Install all Python dependencies listed in requirements.txt
+      # Ensures CI has everything needed to run tests and checks.
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pre-commit
 
-      # Run ruff linting.
+      # Step 4: Install Playwright browsers needed for tests
+      - name: Install Playwright browsers
+        run: playwright install --with-deps
+
+      # Step 5: Run Ruff to check code quality
       - name: Ruff lint
         run: ruff check .
 
-      # Run ruff formatting check.
+      # Step 6: Ensure code formatting matches project standards
       - name: Ruff format check
         run: ruff format --check .
 
-      # Run tests.
+      # Step 7: Run the test suite
       - name: Run tests
-        run: pytest
+        run: pytest -q
