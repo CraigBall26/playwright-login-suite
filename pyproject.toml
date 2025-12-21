@@ -1,8 +1,40 @@
-# Config file for tools like Black and isort.
-# Keeps code style consistent.
+# Project configuration/structure
+
+[project]
+# Basic project info.
+name = "login-flow-automation"
+version = "0.1.0"
+description = "A simple, reviewer-friendly Playwright automation project."
+requires-python = ">=3.11"
+
+[tool.ruff]
+# Ruff handles both linting and formatting.
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+# Linting rules to keep the code clean.
+select = ["E", "F", "W", "I", "N", "UP", "B"]
+ignore = ["E203"]
+
+[tool.ruff.format]
+# Formatting style.
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
 
 [tool.black]
+# Black formatting settings (kept for editor compatibility).
 line-length = 88
+target-version = ["py311"]
 
 [tool.isort]
+# Import sorting rules.
 profile = "black"
+line_length = 88
+
+[tool.pytest.ini_options]
+# Pytest defaults: clean output and predictable test discovery.
+addopts = "-ra -q"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
