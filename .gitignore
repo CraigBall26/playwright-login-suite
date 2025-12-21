@@ -214,3 +214,6 @@ __pycache__/
 
 # Ignore pytest's cache directory created during test runs.
 .pytest_cache/
+
+# Ignore macOS Finder metadata files that shouldn't be committed.
+.DS_Store
