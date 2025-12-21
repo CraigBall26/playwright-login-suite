@@ -1,6 +1,8 @@
 # Second step/page of a two-step login flow.
 # Handles entering the password and submitting the login form.
 
+from playwright.sync_api import Page
+
 
 class LoginPasswordPage:
     def __init__(self, page: Page):
