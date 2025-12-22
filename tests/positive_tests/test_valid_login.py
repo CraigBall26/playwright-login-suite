@@ -4,11 +4,13 @@
 # Checks that valid Hudl credentials load the dashboard.
 
 import os
+
 import pytest
 from dotenv import load_dotenv
+
+from pages.dashboard_page import DashboardPage
 from pages.login_identifier_page import LoginIdentifierPage
 from pages.login_password_page import LoginPasswordPage
-from pages.dashboard_page import DashboardPage
 
 
 @pytest.mark.login
