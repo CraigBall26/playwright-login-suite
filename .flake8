@@ -1,4 +1,4 @@
-#Used to keep code style consistent
+# Used to keep code style consistent
 
 [flake8]
 max-line-length = 88

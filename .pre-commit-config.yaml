@@ -1,4 +1,4 @@
-# Runs Ruff on every commt (linting tools)
+# Runs Ruff on every commit (linting tools)
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit

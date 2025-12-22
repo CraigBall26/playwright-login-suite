@@ -1,17 +1,15 @@
-# Second step/page of a two-step login flow.
+# Second step of a two-step login flow.
 # Handles entering the password and submitting the login form.
-
-from playwright.sync_api import Page
 
 
 class LoginPasswordPage:
-    def __init__(self, page: Page):
+    def __init__(self, page):
         self.page = page
-        self.password_input = page.locator("input[type='password']")
-        self.submit_button = page.get_by_role("button", name="Sign in")
+        self.password_input = page.locator("input[name='password']")
+        self.login_button = page.locator("button[type='submit']")
 
-    def enter_password(self, password: str):
+    # Inputs a password and clicks the login button.
+    def submit_password(self, password):
+        self.password_input.wait_for()
         self.password_input.fill(password)
-
-    def submit(self):
-        self.submit_button.click()
+        self.login_button.click()
