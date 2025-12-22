@@ -46,4 +46,7 @@ jobs:
 
       # Step 7: Run the test suite
       - name: Run tests
+        env:
+          HUDL_EMAIL: ${{ secrets.HUDL_EMAIL }}
+          HUDL_PASSWORD: ${{ secrets.HUDL_PASSWORD }}
         run: pytest -q

@@ -15,8 +15,7 @@ from pages.login_password_page import LoginPasswordPage
 
 @pytest.mark.login
 def test_valid_login(page):
-    # Load credentials from the .env file so we never hard‑code secrets.
-    load_dotenv()
+    # Load environment variables from .env file
     email = os.getenv("HUDL_EMAIL")
     password = os.getenv("HUDL_PASSWORD")
 
