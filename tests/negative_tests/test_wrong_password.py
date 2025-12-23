@@ -31,5 +31,5 @@ def test_login_with_incorrect_password(page):
     # Enter an incorrect password and attempt login.
     password_page.submit_password(WRONG_PASSWORD)
 
-    print(page.inner_text("body"))  # TEMP DEBUG
+    # Verify that we are still on the password page.
     password_page.assert_incorrect_password_message()
