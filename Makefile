@@ -4,9 +4,10 @@
 test:
     pytest
 
-# Check codebase with Ruff.
+# Run Ruff with the same strictness as CI.
 lint:
-    ruff check .
+    ruff check . --fix --exit-non-zero-on-fix
+
 
 # Auto-format codebase with Ruff.
 format:
@@ -15,3 +16,4 @@ format:
 # Install pre-commit hooks for automatic checks.
 hooks:
     pre-commit install
+

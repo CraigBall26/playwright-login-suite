@@ -1,7 +1,9 @@
-# TC-000 — Valid Login
-# Trello: https://trello.com/c/nGoMICYw/102-test-000-valid-login
+# TC-200: Login With Slow Network Conditions
+# Trello: https://trello.com/c/6vJanHyQ/200-test-200
 #
-# Checks that valid Hudl credentials load the dashboard.
+# Validate login flow when network is intentionally slowed.
+# This simulates real-world conditions,
+# such as mobile data on a training field or congested WiFi.
 
 import pytest
 
@@ -10,11 +12,14 @@ from pages.login_identifier_page import LoginIdentifierPage
 from pages.login_password_page import LoginPasswordPage
 
 
-@pytest.mark.login
-def test_valid_login(fresh_page, hudl_credentials):
+@pytest.mark.environment
+def test_slow_network_login(slow_network, hudl_credentials):
+    # Slow_network provides a fresh page with latency applied to every request.
+    page = slow_network
+
     # Page objects for each step of the login flow.
-    identifier_page = LoginIdentifierPage(fresh_page)
-    password_page = LoginPasswordPage(fresh_page)
+    identifier_page = LoginIdentifierPage(page)
+    password_page = LoginPasswordPage(page)
 
     # Start on the login page.
     identifier_page.goto()
@@ -26,9 +31,9 @@ def test_valid_login(fresh_page, hudl_credentials):
     password_page.submit_password(hudl_credentials["password"])
 
     # Create the dashboard page object once login has completed.
-    dashboard_page = DashboardPage(fresh_page)
+    dashboard_page = DashboardPage(page)
 
-    # Wait to finish redirecting and for the dashboard UI to appear.
+    # Wait for the dashboard UI to appear.
     dashboard_page.wait_for_dashboard()
 
     # Confirmation that the user is logged in.

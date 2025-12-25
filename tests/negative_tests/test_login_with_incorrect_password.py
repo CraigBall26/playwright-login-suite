@@ -16,9 +16,10 @@ from tests.tests_data.login_data import WRONG_PASSWORD
 @pytest.mark.login
 @pytest.mark.negative
 def test_login_with_incorrect_password(page):
-    # Load only environment variables provided by CI or local shell.
+    # Load only environment variables provided by CI/CD or local .env file.
     email = os.getenv("HUDL_EMAIL")
 
+    # Page objects for each step of the login flow.
     identifier_page = LoginIdentifierPage(page)
     password_page = LoginPasswordPage(page)
 
@@ -31,5 +32,5 @@ def test_login_with_incorrect_password(page):
     # Enter an incorrect password and attempt login.
     password_page.submit_password(WRONG_PASSWORD)
 
-    # Verify that we are still on the password page.
+    # Verify that we are still on the password page and an error is shown.
     password_page.assert_incorrect_password_message()

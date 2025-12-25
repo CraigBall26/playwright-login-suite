@@ -5,29 +5,40 @@
 class LoginPasswordPage:
     def __init__(self, page):
         self.page = page
-        self.password_input = page.locator("input[name='password']")
-        self.login_button = page.locator("button[type='submit']")
 
-    # Inputs a password and clicks the login button.
+    def wait_for_loaded(self):
+        # Wait for the password URL to load
+        self.page.wait_for_url("**/u/login/password**", timeout=20000)
+
+        # Wait for the password input to appear
+        self.page.locator("input#password").wait_for(state="visible", timeout=20000)
+
+        # Define selectors now that the DOM is ready
+        self.password_input = self.page.locator("input#password:visible")
+        self.login_button = self.page.get_by_role("button", name="Continue", exact=True)
+
     def submit_password(self, password):
-        self.password_input.wait_for()
-        self.password_input.fill(password)
+        self.wait_for_loaded()
+
+        # Ensure the field is visible (editable is not a valid state)
+        self.password_input.wait_for(state="visible")
+
+        # Click before typing (Auth0 sometimes requires focus)
+        self.password_input.click()
+
+        # Type instead of fill (more reliable for Auth0)
+        self.password_input.type(password, delay=50)
+
+        # Blur to trigger Auth0 validation
+        self.page.keyboard.press("Tab")
+
+        # Wait for the Continue button to become enabled
+        self.page.wait_for_selector('button:has-text("Continue"):not([disabled])')
+
+        # Click the enabled Continue button
         self.login_button.click()
 
-    # Asserts that we are still on the same page after a failed login attempt.
-    def assert_still_on_password_page(self):
-        assert "/login/password" in self.page.url, (
-            f"Expected to still be on the password page, but URL is: {self.page.url}"
-        )
-        assert self.password_input.is_visible(), (
-            "Password input is not visible — user may have navigated away unexpectedly."
-        )
-
-    # Asserts that the incorrect password error message is visible.
+    # Assert that an incorrect password error message is shown.
     def assert_incorrect_password_message(self):
-        error_message = self.page.get_by_text(
-            "Your email or password is incorrect. Try again."
-        )
-        assert error_message.is_visible(), (
-            "Incorrect password error message is not visible."
-        )
+        error = self.page.locator("#error-element-password")
+        error.wait_for(state="visible", timeout=8000)

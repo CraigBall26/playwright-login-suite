@@ -1,22 +1,25 @@
 # Page object for the Hudl dashboard.
 # Contains locators for interacting with the dashboard page.
 
-import re
-
 
 class DashboardPage:
     def __init__(self, page):
         self.page = page
-        # Uses regex to match the user initials in the user menu. Regexes are fun.
-        self.user_menu = page.get_by_role("heading", name=re.compile(r"^[A-Z]{2}$"))
 
+        # No stable UI elements exist for consumer accounts with no teams.
+        # The only reliable indicator of login is the /home URL.
+        self.home_url_pattern = "**/home**"
+
+    # Wait for the dashboard to finish loading after login.
     def wait_for_dashboard(self):
-        # Wait until we're on any hudl.com page (e.g., /home, /dashboard, etc.)
-        self.page.wait_for_url("**hudl.com/**", timeout=15000)
+        # If we reach /home, the user is authenticated.
+        self.page.wait_for_url(self.home_url_pattern, timeout=20000)
 
-        # Wait for the user menu initials to appear in the top-right corner.
-        self.user_menu.wait_for(state="visible")
-
+    # Confirmation that the user is logged in.
     def assert_logged_in(self):
-        # Confirms the user menu is visible.
-        self.user_menu.wait_for(state="visible")
+        assert "/home" in self.page.url, "Expected to be on /home after login."
+
+    # Opens the user/account menu in the top navigation bar.
+    # Not available for consumer accounts with no teams.
+    def user_menu(self):
+        raise NotImplementedError("This account type does not display a user menu.")
