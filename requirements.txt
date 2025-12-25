@@ -9,3 +9,4 @@ black
 isort
 pre-commit
 python-dotenv
+pytest-playwright
