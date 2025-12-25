@@ -14,8 +14,11 @@ load_dotenv()
 # Browser fixture (WebKit avoids Auth0 bot detection).
 @pytest.fixture(scope="session")
 def browser(playwright):
+    # Determine headless mode based on CI environment.
+    headless_mode = os.getenv("CI", "false") == "true"
+
     browser = playwright.webkit.launch(
-        headless=False,  # run like a real browser
+        headless=headless_mode,
         args=["--start-maximized"],
     )
     return browser
