@@ -17,7 +17,6 @@ def browser(playwright):
     # WebKit must run headless to avoid Inspector and random crashes.
     browser = playwright.webkit.launch(
         headless=True,
-        args=["--window-size=1280,800"],
     )
     return browser
 
