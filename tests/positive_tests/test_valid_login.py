@@ -1,15 +1,15 @@
 # TC-000: Valid Login
-# This test covers the full login flow using the real Auth0 UI.
-# Notes:
-# - The identifier page can hydrate slowly, so we wait for the field.
-# - The password page loads only after a successful identifier step.
-# - Hudl redirects different account types to different landing pages.
-# - The SSR WebNav container is the most stable logged-in element for this account.
+# -------------------
+# Full end‑to‑end login using the real Auth0 UI, confirming that a valid user
+# can authenticate successfully and reach a logged‑in state.
+#
+# Trello: https://trello.com/c/nGoMICYw/102-test-000-valid-login-dashboard-check
 
 import pytest
+
+from pages.dashboard_page import DashboardPage
 from pages.login_identifier_page import LoginIdentifierPage
 from pages.login_password_page import LoginPasswordPage
-from pages.dashboard_page import DashboardPage
 
 
 @pytest.mark.login
@@ -31,8 +31,8 @@ def test_valid_login(fresh_page, hudl_credentials):
     # Small pause to allow redirects to complete.
     fresh_page.wait_for_timeout(3000)
 
-    # Step 2: prove we landed on a logged-in page.
+    # Assert we landed on a logged-in page.
     assert "/home" in fresh_page.url or "/dashboard" in fresh_page.url
 
-    # Step 3: wait for the logged-in UI to load.
+    # Wait for the logged-in UI to load.
     dashboard_page.wait_for_logged_in()

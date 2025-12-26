@@ -2,10 +2,10 @@
 # Keeping selectors simple and readable for stability and reviewer clarity.
 
 from playwright.sync_api import Page
+
 from locators.login_identifier_locators import (
-    EMAIL_INPUT,
     CONTINUE_BUTTON,
-    ERROR_MESSAGE,
+    EMAIL_INPUT,
 )
 
 
@@ -25,8 +25,3 @@ class LoginIdentifierPage:
         self.email_input.fill(email)
         self.continue_button.wait_for(state="visible")
         self.continue_button.click()
-
-    # Auth0 shows incorrect password errors on THIS page, not the password page.
-    def assert_incorrect_password_message(self):
-        error = self.page.locator(ERROR_MESSAGE)
-        error.wait_for(state="visible")

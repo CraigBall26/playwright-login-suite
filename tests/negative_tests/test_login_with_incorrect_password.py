@@ -1,8 +1,13 @@
-# TC-101 — Login With Incorrect Password
-# Uses the same page object flow as the valid login test.
-# Only difference: we enter a wrong password and assert the error.
+# Test-100: Login With Invalid Password
+# -------------------
+# Verify that when a user enters a valid email and an
+# invalid password, login does not succeed, the user is not
+# taken to the dashboard, and an appropriate error message is displayed
+
+# Trello: https://trello.com/c/E37jkxMO/122-test-100-login-with-invalid-password
 
 import pytest
+
 from pages.login_identifier_page import LoginIdentifierPage
 from pages.login_password_page import LoginPasswordPage
 
@@ -20,10 +25,10 @@ def test_login_with_incorrect_password(page, hudl_credentials):
     identifier_page.submit_identifier(hudl_credentials["email"])
 
     # Submit an incorrect password.
-    password_page.submit_password("WRONG_PASSWORD")
+    password_page.submit_password("WrongPass!123")
 
-    # Assert that the incorrect password error is visible.
-    password_page.assert_incorrect_password_error()
+    # Assert that the incorrect password message is visible.
+    password_page.assert_incorrect_password_message()
 
     # Assert that we did NOT reach the dashboard.
     assert "hudl.com/home" not in page.url

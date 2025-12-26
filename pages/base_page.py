@@ -2,6 +2,7 @@
 # Handles fallback selectors, waiting, and simple interactions.
 
 from playwright.sync_api import Page
+
 from locators.dashboard_locators import SSR_WEBNAV_CONTAINER
 
 

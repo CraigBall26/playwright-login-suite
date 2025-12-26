@@ -2,9 +2,11 @@
 
 SSR_WEBNAV_PRIMARY = (
     "#ssr-webnav > div > div.hui-webnav__grid.hui-navcontainer > "
-    "nav.hui-webnav__grid-col--onewhole.hui-globalnav.uni-env--dark.uni-environment--dark > "
+    "nav.hui-webnav__grid-col--onewhole.hui-globalnav."
+    "uni-env--dark.uni-environment--dark > "
     "div:nth-child(2)"
 )
+
 
 # Fallback: broader SSR WebNav container (covers layout variations).
 SSR_WEBNAV_FALLBACK = "nav.hui-globalnav, nav.hui-webnav__grid-col--onewhole"

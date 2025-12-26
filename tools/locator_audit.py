@@ -1,8 +1,9 @@
 # tools/locator_audit.py
-from pathlib import Path
 import sys
 import time
 from importlib import import_module
+from pathlib import Path
+
 from playwright.sync_api import sync_playwright
 
 # Ensure the repo root is on sys.path so imports like "locators.*" work
@@ -108,8 +109,10 @@ def audit():
                 }
                 status = "OK" if matched else "MISSING"
                 print(
-                    f"{attr:20} {status:8} matched={matched} count={count} selector_used={matched}"
+                    f"{attr:20} {status:8} matched={matched} "
+                    f"count={count} selector_used={matched}"
                 )
+
             results[name] = page_results
             page.close()
 

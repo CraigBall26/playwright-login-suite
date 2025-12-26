@@ -60,31 +60,3 @@ def hudl_credentials():
         "email": os.getenv("HUDL_EMAIL"),
         "password": os.getenv("HUDL_PASSWORD"),
     }
-
-
-# Slow network fixture for environment tests.
-# Slow network fixture for environment tests.
-@pytest.fixture
-def slow_network(browser):
-    """
-    WebKit-safe slow environment simulation.
-    No network interception. No throttling.
-    Only adds artificial pauses between steps.
-    """
-
-    context = browser.new_context(
-        viewport={"width": 1280, "height": 800},
-        java_script_enabled=True,
-    )
-
-    page = context.new_page()
-
-    # Increase timeouts to match slower behaviour.
-    page.set_default_timeout(60000)
-    page.set_default_navigation_timeout(60000)
-
-    # Helper to simulate slow user/environment conditions.
-    page.slow = lambda: page.wait_for_timeout(300)
-
-    yield page
-    context.close()

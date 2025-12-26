@@ -1,10 +1,11 @@
 # Page object for the password step of the login flow.
 
 from playwright.sync_api import Page
+
 from locators.login_password_locators import (
-    PASSWORD_INPUT,
     CONTINUE_BUTTON,
     ERROR_MESSAGE,
+    PASSWORD_INPUT,
 )
 
 
