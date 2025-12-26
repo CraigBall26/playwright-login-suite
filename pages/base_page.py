@@ -11,10 +11,7 @@ class BasePage:
         self.page = page
 
     def _first_available(self, selector: str):
-        """
-        Accepts a comma-separated selector string (fallbacks).
-        Returns the first locator that exists on the page.
-        """
+        # Returns the first locator that matches from a comma-separated list.
         for sel in [s.strip() for s in selector.split(",")]:
             loc = self.page.locator(sel)
             if loc.count() > 0:
@@ -40,17 +37,11 @@ class BasePage:
             return False
 
     def wait_for_selector(self, selector: str, timeout: int = 10000):
-        """
-        Generic wait helper used by child pages.
-        Keeps waits consistent across the suite.
-        """
+        # Waits for the first available selector from a comma-separated list.
         loc = self._first_available(selector)
         loc.wait_for(state="visible", timeout=timeout)
         return loc
 
     def wait_for_logged_in(self, timeout: int = 10000):
-        """
-        Confirms the user is fully logged in by waiting for the SSR WebNav container.
-        This is the most stable post-login element for this account.
-        """
+        # Waits for the global navigation to confirm logged-in state.
         return self.wait_for_selector(SSR_WEBNAV_CONTAINER, timeout=timeout)

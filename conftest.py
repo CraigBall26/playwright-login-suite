@@ -3,7 +3,6 @@
 # Keeps the framework readable.
 
 import os
-
 import pytest
 from dotenv import load_dotenv
 
@@ -11,17 +10,29 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# Browser fixture (WebKit avoids Auth0 bot detection).
+# ---------------------------------------------------------------------------
+# BROWSER FIXTURE
+# ---------------------------------------------------------------------------
+# WebKit avoids Auth0 bot detection.
+# This version RESPECTS pytest's --headed flag so you can debug visually.
+#   - Running normally: headless=True (fast, stable)
+#   - Running with --headed: headless=False (visible browser)
+#   - slow_mo added when headed so you can watch interactions clearly
+# ---------------------------------------------------------------------------
 @pytest.fixture(scope="session")
-def browser(playwright):
-    # WebKit must run headless to avoid Inspector and random crashes.
+def browser(playwright, pytestconfig):
+    headed = pytestconfig.getoption("--headed")
+
     browser = playwright.webkit.launch(
-        headless=True,
+        headless=not headed,  # headed=True → visible browser
+        slow_mo=200 if headed else 0,  # slow motion only when debugging
     )
     return browser
 
 
-# Context fixture using an authenticated session (storage_state.json).
+# ---------------------------------------------------------------------------
+# AUTHENTICATED CONTEXT (uses storage_state.json)
+# ---------------------------------------------------------------------------
 @pytest.fixture
 def context(browser):
     return browser.new_context(
@@ -37,7 +48,9 @@ def page(context):
     return context.new_page()
 
 
-# Fresh context for login tests (no storage_state).
+# ---------------------------------------------------------------------------
+# FRESH CONTEXT (no storage_state) — used for login tests
+# ---------------------------------------------------------------------------
 @pytest.fixture
 def fresh_context(browser):
     return browser.new_context(
@@ -52,7 +65,9 @@ def fresh_page(fresh_context):
     return fresh_context.new_page()
 
 
-# Hudl login details pulled from .env.
+# ---------------------------------------------------------------------------
+# HUDL CREDENTIALS
+# ---------------------------------------------------------------------------
 @pytest.fixture
 def hudl_credentials():
     return {

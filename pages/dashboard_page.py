@@ -10,6 +10,8 @@ class DashboardPage(BasePage):
         super().__init__(page)
 
     def wait_for_loaded(self):
+        # Uses the full fallback chain from the repo.
+        # Ensures the test passes across all Hudl dashboard variants.
         self.wait_for_selector(SSR_WEBNAV_CONTAINER)
 
     def wait_for_dashboard(self):

@@ -1,5 +1,11 @@
-# Locator definitions for the password step of the login flow.
+# Locators for the password step of the login flow only
 
+# Core fields
 PASSWORD_INPUT = "input[name='password']"
 CONTINUE_BUTTON = "role=button[name='Continue']"
-ERROR_MESSAGE = "text=Your email or password is incorrect. Try again."
+
+# Errors
+PASSWORD_ERROR = "text=Your email or password is incorrect. Try again."
+
+# Toggles
+SHOW_PASSWORD_TOGGLE = "role=switch[name='Show password']"

@@ -1,5 +1,8 @@
-# Locators for the identifier (email) step of the login flow.
+# Locators for the identifier (email) step of the login flow only
 
+# Inputs
 EMAIL_INPUT = "role=textbox[name='Email']"
 CONTINUE_BUTTON = "button[data-action-button-primary='true']"
-ERROR_MESSAGE = "div[role='alert'] >> text=Wrong email or password"
+
+# Errors
+INVALID_EMAIL_ERROR = "text=Enter a valid email."

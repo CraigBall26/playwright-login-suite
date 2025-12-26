@@ -6,10 +6,9 @@
 # Trello: https://trello.com/c/nGoMICYw/102-test-000-valid-login-dashboard-check
 
 import pytest
-
-from pages.dashboard_page import DashboardPage
 from pages.login_identifier_page import LoginIdentifierPage
 from pages.login_password_page import LoginPasswordPage
+from pages.dashboard_page import DashboardPage
 
 
 @pytest.mark.login
@@ -22,17 +21,18 @@ def test_valid_login(fresh_page, hudl_credentials):
     # Start on the login page.
     identifier_page.goto()
 
-    # Enter email address and continue to the password page.
+    # Enter email address and continue to password page.
     identifier_page.submit_identifier(hudl_credentials["email"])
+
+    # Wait for the password page to fully load.
+    password_page.wait_for_loaded()
 
     # Enter password and submit the login form.
     password_page.submit_password(hudl_credentials["password"])
 
-    # Small pause to allow redirects to complete.
-    fresh_page.wait_for_timeout(3000)
+    # Assert the dashboard is visible.
+    fresh_page.wait_for_url("**/home", timeout=15000)
+    dashboard_page.wait_for_loaded()
 
-    # Assert we landed on a logged-in page.
-    assert "/home" in fresh_page.url or "/dashboard" in fresh_page.url
-
-    # Wait for the logged-in UI to load.
-    dashboard_page.wait_for_logged_in()
+    # Final sanity check: URL should contain /home once logged in.
+    assert "home" in fresh_page.url

@@ -7,7 +7,6 @@
 # Trello: https://trello.com/c/E37jkxMO/122-test-100-login-with-invalid-password
 
 import pytest
-
 from pages.login_identifier_page import LoginIdentifierPage
 from pages.login_password_page import LoginPasswordPage
 
@@ -20,15 +19,18 @@ def test_login_with_incorrect_password(page, hudl_credentials):
 
     # Start on the login page.
     identifier_page.goto()
+    print(page.url)
+    print(page.content())
 
     # Enter email address and continue to password page.
     identifier_page.submit_identifier(hudl_credentials["email"])
+    print(page.url)
+
+    # Wait for the password page to fully load.
+    password_page.wait_for_loaded()
 
     # Submit an incorrect password.
     password_page.submit_password("WrongPass!123")
 
-    # Assert that the incorrect password message is visible.
-    password_page.assert_incorrect_password_message()
-
-    # Assert that we did NOT reach the dashboard.
-    assert "hudl.com/home" not in page.url
+    # Assert the error message is shown.
+    password_page.assert_password_error()

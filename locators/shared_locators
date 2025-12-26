@@ -1,9 +1,0 @@
-# Shared selectors used across multiple pages.
-# Keeps repeated patterns in one place.
-
-
-class SharedLocators:
-    LOADING_SPINNER = "[data-qa='loading-spinner'], .spinner, [role='progressbar']"
-    ALERT = "[data-qa='alert'], .alert, [role='alert']"
-    FORM_ERROR = "[data-qa='form-error'], .form-error, .field-error"
-    MODAL = "[data-qa='modal'], .modal, [role='dialog']"
