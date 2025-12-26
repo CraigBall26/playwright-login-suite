@@ -7,6 +7,7 @@
 # Trello: https://trello.com/c/E37jkxMO/122-test-100-login-with-invalid-password
 
 import pytest
+
 from pages.login_identifier_page import LoginIdentifierPage
 from pages.login_password_page import LoginPasswordPage
 

@@ -2,7 +2,8 @@
 # Keeping selectors simple and readable
 
 from playwright.sync_api import Page
-from locators import login_identifier_locators as L
+
+from locators import login_identifier_locators as L  # noqa: N812
 from locators.shared_locators import SharedLocators as S
 
 

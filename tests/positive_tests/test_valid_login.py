@@ -6,9 +6,10 @@
 # Trello: https://trello.com/c/nGoMICYw/102-test-000-valid-login-dashboard-check
 
 import pytest
+
+from pages.dashboard_page import DashboardPage
 from pages.login_identifier_page import LoginIdentifierPage
 from pages.login_password_page import LoginPasswordPage
-from pages.dashboard_page import DashboardPage
 
 
 @pytest.mark.login
