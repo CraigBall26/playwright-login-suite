@@ -1,24 +1,14 @@
 # TC-101 — Login With Incorrect Password
-# Trello: https://trello.com/c/AtXenhxi/123-test-101-login-with-incorrect-password
-#
-# Checks that entering a valid email with an incorrect password does not
-# allow access to the dashboard. Appropriate error message should be shown.
-
-import os
+# Uses the same page object flow as the valid login test.
+# Only difference: we enter a wrong password and assert the error.
 
 import pytest
-
 from pages.login_identifier_page import LoginIdentifierPage
 from pages.login_password_page import LoginPasswordPage
-from tests.tests_data.login_data import WRONG_PASSWORD
 
 
-@pytest.mark.login
 @pytest.mark.negative
-def test_login_with_incorrect_password(page):
-    # Load only environment variables provided by CI/CD or local .env file.
-    email = os.getenv("HUDL_EMAIL")
-
+def test_login_with_incorrect_password(page, hudl_credentials):
     # Page objects for each step of the login flow.
     identifier_page = LoginIdentifierPage(page)
     password_page = LoginPasswordPage(page)
@@ -26,11 +16,14 @@ def test_login_with_incorrect_password(page):
     # Start on the login page.
     identifier_page.goto()
 
-    # Enter valid email and click continue.
-    identifier_page.submit_email(email)
+    # Enter email address and continue to password page.
+    identifier_page.submit_identifier(hudl_credentials["email"])
 
-    # Enter an incorrect password and attempt login.
-    password_page.submit_password(WRONG_PASSWORD)
+    # Submit an incorrect password.
+    password_page.submit_password("WRONG_PASSWORD")
 
-    # Verify that we are still on the password page and an error is shown.
-    password_page.assert_incorrect_password_message()
+    # Assert that the incorrect password error is visible.
+    password_page.assert_incorrect_password_error()
+
+    # Assert that we did NOT reach the dashboard.
+    assert "hudl.com/home" not in page.url

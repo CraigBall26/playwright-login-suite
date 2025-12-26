@@ -1,27 +1,32 @@
-# First step/page of a two-step login flow.
-# Handles entering email and moving to the enter password page.
-# Displays alternative social login options.
+# Page object for the identifier (email) step of the login flow.
+# Keeping selectors simple and readable for stability and reviewer clarity.
+
+from playwright.sync_api import Page
+from locators.login_identifier_locators import (
+    EMAIL_INPUT,
+    CONTINUE_BUTTON,
+    ERROR_MESSAGE,
+)
 
 
 class LoginIdentifierPage:
-    # Selectors for page elements
-    def __init__(self, page):
+    def __init__(self, page: Page):
         self.page = page
-        self.email_input = page.locator("#username")
-        self.continue_button = page.get_by_role("button", name="Continue", exact=True)
+        self.email_input = page.locator(EMAIL_INPUT)
+        self.continue_button = page.locator(CONTINUE_BUTTON)
 
-    # Navigate to the Hudl login page.
+    # Navigate directly to the Hudl login page.
     def goto(self):
         self.page.goto("https://www.hudl.com/login")
+        self.email_input.wait_for(state="visible")
 
-    # Ensure the login page is fully loaded and interactive.
-    def wait_for_loaded(self):
-        self.continue_button.wait_for(state="visible")
-
-    # Inputs an email and clicks the continue button.
-    def submit_email(self, email):
-        self.wait_for_loaded()
+    # Enter the email address and continue to the password page.
+    def submit_identifier(self, email: str):
         self.email_input.fill(email)
-
-        # Click the correct Continue button
+        self.continue_button.wait_for(state="visible")
         self.continue_button.click()
+
+    # Auth0 shows incorrect password errors on THIS page, not the password page.
+    def assert_incorrect_password_message(self):
+        error = self.page.locator(ERROR_MESSAGE)
+        error.wait_for(state="visible")

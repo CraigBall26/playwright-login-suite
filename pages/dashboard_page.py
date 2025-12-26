@@ -1,25 +1,41 @@
-# Page object for the Hudl dashboard.
-# Contains locators for interacting with the dashboard page.
+# Final step of the login flow.
+# Confirms the user has successfully reached the authenticated dashboard.
+
+# DashboardPage
+# --------------
+# Represents the Hudl dashboard after a successful login.
+# This page object uses the SSR WebNav container as the anchor
+# for confirming that the user has reached a logged‑in state.
+#
+# The selector chain comes from locators/dashboard_locators.py
+# and includes a primary selector plus fallbacks for layout variations.
+
+from pages.base_page import BasePage
+from locators.dashboard_locators import SSR_WEBNAV_CONTAINER
 
 
-class DashboardPage:
+class DashboardPage(BasePage):
+    """
+    Page object for the Hudl dashboard.
+    Provides a stable post-login anchor using the SSR WebNav container.
+    """
+
     def __init__(self, page):
-        self.page = page
+        super().__init__(page)
 
-        # No stable UI elements exist for consumer accounts with no teams.
-        # The only reliable indicator of login is the /home URL.
-        self.home_url_pattern = "**/home**"
+    def wait_for_loaded(self):
+        """
+        Wait for the dashboard's global navigation to appear.
+        This is the most reliable indicator that the user is logged in.
+        """
+        # Diagnostic: print the current URL so environment tests can see
+        # exactly where the login flow ended up.
+        print("CURRENT URL:", self.page.url)
 
-    # Wait for the dashboard to finish loading after login.
+        self.wait_for_selector(SSR_WEBNAV_CONTAINER)
+
     def wait_for_dashboard(self):
-        # If we reach /home, the user is authenticated.
-        self.page.wait_for_url(self.home_url_pattern, timeout=20000)
-
-    # Confirmation that the user is logged in.
-    def assert_logged_in(self):
-        assert "/home" in self.page.url, "Expected to be on /home after login."
-
-    # Opens the user/account menu in the top navigation bar.
-    # Not available for consumer accounts with no teams.
-    def user_menu(self):
-        raise NotImplementedError("This account type does not display a user menu.")
+        """
+        Public wrapper for waiting until the dashboard is ready.
+        """
+        self.wait_for_loaded()

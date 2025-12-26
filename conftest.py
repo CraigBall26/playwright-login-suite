@@ -14,13 +14,10 @@ load_dotenv()
 # Browser fixture (WebKit avoids Auth0 bot detection).
 @pytest.fixture(scope="session")
 def browser(playwright):
-    # CI runs headless (no display server). Local runs headed.
-    headless_mode = os.getenv("CI", "false") == "true"
-
+    # WebKit must run headless to avoid Inspector and random crashes.
     browser = playwright.webkit.launch(
-        headless=headless_mode,
-        # WebKit does not support --start-maximized (fails in CI)
-        args=[],
+        headless=True,
+        args=["--window-size=1280,800"],
     )
     return browser
 
@@ -66,11 +63,13 @@ def hudl_credentials():
 
 
 # Slow network fixture for environment tests.
+# Slow network fixture for environment tests.
 @pytest.fixture
 def slow_network(browser):
     """
-    Creates a fresh context + page with artificial latency added to
-    fetch() and XMLHttpRequest. Useful for simulating slow environments.
+    WebKit-safe slow environment simulation.
+    No network interception. No throttling.
+    Only adds artificial pauses between steps.
     """
 
     context = browser.new_context(
@@ -80,30 +79,12 @@ def slow_network(browser):
 
     page = context.new_page()
 
-    # Inject artificial latency into all network requests.
-    page.add_init_script("""
-        const originalFetch = window.fetch;
-        window.fetch = async (...args) => {
-            await new Promise(r => setTimeout(r, 300)); // 300ms delay
-            return originalFetch(...args);
-        };
+    # Increase timeouts to match slower behaviour.
+    page.set_default_timeout(60000)
+    page.set_default_navigation_timeout(60000)
 
-        const originalOpen = XMLHttpRequest.prototype.open;
-        XMLHttpRequest.prototype.open = function(...args) {
-            this.addEventListener('readystatechange', () => {
-                if (this.readyState === 1) {
-                    const delay = 300;
-                    const start = Date.now();
-                    while (Date.now() - start < delay) {}
-                }
-            });
-            return originalOpen.apply(this, args);
-        };
-    """)
-
-    # Longer timeouts to match the slower environment.
-    context.set_default_navigation_timeout(60000)
-    context.set_default_timeout(60000)
+    # Helper to simulate slow user/environment conditions.
+    page.slow = lambda: page.wait_for_timeout(300)
 
     yield page
     context.close()

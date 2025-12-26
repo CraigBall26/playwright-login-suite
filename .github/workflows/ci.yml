@@ -8,7 +8,7 @@ on:
   push:
   pull_request:
 
- # Groups all the steps for the workflow.   
+# Groups all the steps for the workflow.
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,9 +36,9 @@ jobs:
       - name: Install Playwright browsers
         run: playwright install --with-deps
 
-      # Step 5: Run Ruff to check code quality
-      - name: Ruff lint
-        run: ruff check .
+      # Step 5: Run Ruff with the same strictness as local development
+      - name: Ruff lint (strict)
+        run: ruff check . --exit-non-zero-on-fix
 
       # Step 6: Ensure code formatting matches project standards
       - name: Ruff format check
