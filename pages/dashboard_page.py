@@ -1,18 +1,19 @@
-# Final step of the login flow.
-# Confirms the user has successfully reached the authenticated dashboard.
+# Page: Dashboard
+# ----------------
+# Handles the post-login dashboard view and provides helpers for verifying
+# that the user has reached a logged-in state.
 
-from locators.dashboard_locators import SSR_WEBNAV_CONTAINER
+from locators import dashboard_locators as L  # noqa: N812
 from pages.base_page import BasePage
 
 
 class DashboardPage(BasePage):
+    # Locators
+    SSR_WEBNAV_CONTAINER = L.SSR_WEBNAV_CONTAINER
+
     def __init__(self, page):
         super().__init__(page)
 
     def wait_for_loaded(self):
-        # Uses the full fallback chain from the repo.
-        # Ensures the test passes across all Hudl dashboard variants.
-        self.wait_for_selector(SSR_WEBNAV_CONTAINER)
-
-    def wait_for_dashboard(self):
-        self.wait_for_loaded()
+        # Uses BasePage._first_available to confirm the nav container exists
+        self._first_available(self.SSR_WEBNAV_CONTAINER)
