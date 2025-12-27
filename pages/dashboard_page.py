@@ -13,7 +13,15 @@ class DashboardPage(BasePage):
 
     def __init__(self, page):
         super().__init__(page)
+        self.page = page
 
     def wait_for_loaded(self):
         # Uses BasePage._first_available to confirm the nav container exists
         self._first_available(self.SSR_WEBNAV_CONTAINER)
+
+    # Negative-check helper: returns True if ANY selector matches
+    def any_dashboard_element_present(self) -> bool:
+        for sel in [s.strip() for s in self.SSR_WEBNAV_CONTAINER.split(",")]:
+            if self.page.locator(sel).count() > 0:
+                return True
+        return False

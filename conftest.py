@@ -54,10 +54,12 @@ def page(context):
 # ---------------------------------------------------------------------------
 @pytest.fixture
 def fresh_context(browser):
-    return browser.new_context(
+    context = browser.new_context(
         viewport={"width": 1280, "height": 800},
         java_script_enabled=True,
     )
+    yield context
+    context.close()  # ← CRITICAL FIX: ensures clean state per test
 
 
 # Fresh page for login tests (no session).

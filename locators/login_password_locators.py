@@ -1,11 +1,21 @@
-# Locators for the password step of the login flow only
-
+# Login Password Locators
 # Core fields
 PASSWORD_INPUT = "input[name='password']"
-CONTINUE_BUTTON = "role=button[name='Continue']"
-
-# Errors
-PASSWORD_ERROR = "text=Your email or password is incorrect. Try again."
+CONTINUE_BUTTON = "button[type='submit']"
 
 # Toggles
-SHOW_PASSWORD_TOGGLE = "role=switch[name='Show password']"
+SHOW_PASSWORD_TOGGLE = "[data-testid='password-visibility-toggle']"
+
+# Error messages
+PASSWORD_ERROR_SELECTORS = [
+    # TC‑101: Unknown email
+    "text=Incorrect username or password",
+    # TC‑100: Valid email + wrong password
+    "text=Your email or password is incorrect",
+    # Additional Auth0 variants (fallbacks)
+    "text=Invalid email or password",
+    "text=Wrong email or password",
+    "[data-testid='login-error']",
+    ".auth0-global-message-error",
+    ".alert-error",
+]

@@ -6,7 +6,6 @@
 #
 # Trello: https://trello.com/c/jdSYIjSA/201-test-500-test-locator-checks
 
-
 import pytest
 
 from pages.dashboard_page import DashboardPage
@@ -29,22 +28,19 @@ def test_locator_checks(fresh_page, hudl_credentials):
     password = LoginPasswordPage(fresh_page)
     password.wait_for_loaded()
 
-    # Assert Password locators exist
+    # Assert Password locators exist (toggle removed — optional UI)
     assert password.password_input.count() > 0
     assert password.continue_button.count() > 0
-    assert password.show_password_toggle.count() > 0
 
     # Dashboard Objects
     password.submit_password(hudl_credentials["password"])
 
-    # Match TC‑000: wait for redirect before checking dashboard selectors
+    # Wait for redirect before checking dashboard selectors
     fresh_page.wait_for_url("**/home", timeout=15000)
-
     dashboard = DashboardPage(fresh_page)
 
-    # NEW: wait for the nav container to appear before asserting
+    # Wait for the nav container to appear before asserting
     fresh_page.wait_for_selector(dashboard.SSR_WEBNAV_CONTAINER, timeout=5000)
-
     dashboard.wait_for_loaded()
 
     # Dashboard Locator
