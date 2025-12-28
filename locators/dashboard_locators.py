@@ -1,10 +1,9 @@
 # Dashboard Locators
 # ------------------
 # Provides a stable chain of selectors for detecting the real Hudl dashboard
-# after a successful login. These selectors intentionally avoid generic
-# elements that also appear on Auth0 pages.
+# after a successful login.
 
-# Primary SSR WebNav selector — unique to the real Hudl dashboard
+# Primary WebNav selector — unique to the real Hudl dashboard
 SSR_WEBNAV_PRIMARY = (
     "#ssr-webnav > div > div.hui-webnav__grid.hui-navcontainer > "
     "nav.hui-webnav__grid-col--onewhole.hui-globalnav."
@@ -12,8 +11,15 @@ SSR_WEBNAV_PRIMARY = (
     "div:nth-child(2)"
 )
 
-# Fallback: broader SSR WebNav container (still dashboard‑specific)
+# Fallback WebNav selectors
 SSR_WEBNAV_FALLBACK = "nav.hui-globalnav, nav.hui-webnav__grid-col--onewhole"
-
-# Combined fallback chain — intentionally excludes generic selectors
 SSR_WEBNAV_CONTAINER = f"{SSR_WEBNAV_PRIMARY}, {SSR_WEBNAV_FALLBACK}"
+
+# User menu button (we just check for visiblity)
+USER_MENU_BUTTON = "button[data-qa='webnav-user-menu']"
+
+# Logout button inside the user menu
+LOGOUT_BUTTON = "a[data-qa-id='webnav-usermenu-logout']"
+
+# Menu dropdown trigger (the initials avatar)
+USER_MENU_DROPDOWN = "h5.uni-avatar__initials--user"

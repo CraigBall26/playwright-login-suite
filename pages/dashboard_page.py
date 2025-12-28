@@ -1,28 +1,41 @@
-# Page object for the Hudl dashboard after login.
+# Page Objects for the Hudl dashboard page after a successful login.
 
-from playwright.sync_api import Page
-
-from locators.dashboard_locators import SSR_WEBNAV_CONTAINER
+from locators.dashboard_locators import (
+    LOGOUT_BUTTON,
+    SSR_WEBNAV_CONTAINER,
+    USER_MENU_BUTTON,
+    USER_MENU_DROPDOWN,
+)
 from pages.base_page import BasePage
 
 
 class DashboardPage(BasePage):
-    # Expose the selector so tests can reference it directly
+    # Stable selectors for detecting the real Hudl dashboard
     SSR_WEBNAV_CONTAINER = SSR_WEBNAV_CONTAINER
+    USER_MENU_BUTTON = USER_MENU_BUTTON
+    USER_MENU_DROPDOWN = USER_MENU_DROPDOWN
+    LOGOUT_BUTTON = LOGOUT_BUTTON
 
-    def __init__(self, page: Page):
-        super().__init__(page)
-        # Raw locator (may match multiple elements — handled by BasePage)
-        self.nav_container = page.locator(SSR_WEBNAV_CONTAINER)
-
-    # Ensure the dashboard is fully loaded before interacting.
     def wait_for_loaded(self):
-        loc = self._first_available(self.SSR_WEBNAV_CONTAINER)
-        self.wait_for_visible(loc)
+        # Wait for the SSR WebNav container to appear — unique to the dashboard.
+        self.page.wait_for_selector(self.SSR_WEBNAV_CONTAINER, timeout=5000)
 
-    # Used by negative tests to confirm we did NOT reach the dashboard.
+    def open_user_menu(self):
+        # Opens the user menu in the SSR WebNav header.
+        # Prefer the existing button if visible (your original behaviour)
+        if self.page.locator(self.USER_MENU_BUTTON).is_visible():
+            self.page.click(self.USER_MENU_BUTTON)
+        else:
+            # Fallback to the initials avatar (hover-activated)
+            self.page.hover(self.USER_MENU_DROPDOWN)
+
+        # Wait for the logout button to appear
+        self.page.wait_for_selector(self.LOGOUT_BUTTON, state="visible")
+
+    def click_logout(self):
+        # Clicks the logout button inside the user menu.
+        self.page.click(self.LOGOUT_BUTTON)
+
     def any_dashboard_element_present(self) -> bool:
-        try:
-            return self.nav_container.count() > 0
-        except Exception:
-            return False
+        # Used by negative login tests to confirm we did NOT reach the dashboard.
+        return self.page.locator(self.SSR_WEBNAV_CONTAINER).is_visible()
