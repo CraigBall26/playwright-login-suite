@@ -1,0 +1,8 @@
+// Valid, but incorrect login test data.
+// Real credentials must come from env.
+{
+    "valid_but_incorrect_credentials": {
+        "email": "JustinJefferson@fakehudl.com",
+        "password": "RandyMoss123!"
+    }
+}

@@ -1,0 +1,6 @@
+// Environment URLs used across tests.
+// No sensitive data stored here.
+{
+    "login_page": "https://www.hudl.com/login",
+    "logout_redirect": "https://www.hudl.com"
+}
