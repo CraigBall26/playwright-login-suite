@@ -6,6 +6,7 @@
 # Trello: https://trello.com/c/nGoMICYw/102-test-000-valid-login-dashboard-check
 
 import pytest
+
 from flows.login_flow import LoginFlow
 
 

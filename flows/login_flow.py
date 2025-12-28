@@ -1,9 +1,9 @@
 # Flow wrapper that handles the full login sequence.
 # Keeps the test code cleaner by encapsulating the steps.
 
+from pages.dashboard_page import DashboardPage
 from pages.login_identifier_page import LoginIdentifierPage
 from pages.login_password_page import LoginPasswordPage
-from pages.dashboard_page import DashboardPage
 
 
 class LoginFlow:
