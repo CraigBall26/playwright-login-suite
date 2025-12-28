@@ -5,48 +5,48 @@ from playwright.sync_api import Page
 
 from locators import login_password_locators as L  # noqa: N812
 from locators.shared_locators import SharedLocators as S
+from pages.base_page import BasePage
 
 
-class LoginPasswordPage:
+class LoginPasswordPage(BasePage):
     def __init__(self, page: Page):
-        self.page = page
+        super().__init__(page)
 
         # Core fields
         self.password_input = page.locator(L.PASSWORD_INPUT)
         self.continue_button = page.locator(L.CONTINUE_BUTTON)
 
-        # Toggles (optional – not all accounts get this UI element)
+        # Optional toggle (A/B tested — not guaranteed)
         self.show_password_toggle = page.locator(L.SHOW_PASSWORD_TOGGLE)
 
-        # Social login buttons (shared)
+        # Social login buttons
         self.google_button = page.locator(S.GOOGLE_BUTTON)
         self.facebook_button = page.locator(S.FACEBOOK_BUTTON)
         self.apple_button = page.locator(S.APPLE_BUTTON)
 
-        # Footer links (shared)
+        # Footer links
         self.create_account_link = page.locator(S.CREATE_ACCOUNT_LINK)
         self.privacy_policy_link = page.locator(S.PRIVACY_POLICY_LINK)
         self.terms_of_service_link = page.locator(S.TERMS_OF_SERVICE_LINK)
 
-    # Return the first selector whose element is actually visible.
-    def _first_available(self, *selectors):
-        for selector in selectors:
-            locator = self.page.locator(selector)
-            if locator.is_visible():
-                return locator
-        return self.page.locator(selectors[0])
-
-    # Ensure the password page has fully loaded before interacting.
+    # Ensure the password page is fully loaded before interacting.
     def wait_for_loaded(self):
-        self.password_input.wait_for(state="visible")
-        self.continue_button.wait_for(state="visible")  # matches identifier behaviour
-        # Toggle intentionally NOT required — it is optional per-account
+        self.wait_for_visible(self.password_input)
+        self.wait_for_visible(self.continue_button)
+        # Toggle intentionally NOT required — optional UI
 
     # Enter the password and continue to the dashboard.
     def submit_password(self, password: str):
+        self.wait_for_visible(self.password_input)
         self.password_input.fill(password)
-        self.continue_button.wait_for(state="visible")
         self.continue_button.click()
+
+    # Error assertions
+    def assert_password_error(self):
+        # Resolve the correct error selector using fallback logic
+        selector = ",".join(L.PASSWORD_ERROR_SELECTORS)
+        loc = self._first_available(selector)
+        self.wait_for_visible(loc)
 
     # Social login actions
     def click_google(self):
@@ -67,8 +67,3 @@ class LoginPasswordPage:
 
     def click_terms_of_service(self):
         self.terms_of_service_link.click()
-
-    # Error assertions
-    def assert_password_error(self):
-        error_locator = self._first_available(*L.PASSWORD_ERROR_SELECTORS)
-        error_locator.wait_for(state="visible")

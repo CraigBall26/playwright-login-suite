@@ -1,27 +1,28 @@
-# Page: Dashboard
-# ----------------
-# Handles the post-login dashboard view and provides helpers for verifying
-# that the user has reached a logged-in state.
+# Page object for the Hudl dashboard after login.
 
-from locators import dashboard_locators as L  # noqa: N812
+from playwright.sync_api import Page
+
+from locators.dashboard_locators import SSR_WEBNAV_CONTAINER
 from pages.base_page import BasePage
 
 
 class DashboardPage(BasePage):
-    # Locators
-    SSR_WEBNAV_CONTAINER = L.SSR_WEBNAV_CONTAINER
+    # Expose the selector so tests can reference it directly
+    SSR_WEBNAV_CONTAINER = SSR_WEBNAV_CONTAINER
 
-    def __init__(self, page):
+    def __init__(self, page: Page):
         super().__init__(page)
-        self.page = page
+        # Raw locator (may match multiple elements — handled by BasePage)
+        self.nav_container = page.locator(SSR_WEBNAV_CONTAINER)
 
+    # Ensure the dashboard is fully loaded before interacting.
     def wait_for_loaded(self):
-        # Uses BasePage._first_available to confirm the nav container exists
-        self._first_available(self.SSR_WEBNAV_CONTAINER)
+        loc = self._first_available(self.SSR_WEBNAV_CONTAINER)
+        self.wait_for_visible(loc)
 
-    # Negative-check helper: returns True if ANY selector matches
+    # Used by negative tests to confirm we did NOT reach the dashboard.
     def any_dashboard_element_present(self) -> bool:
-        for sel in [s.strip() for s in self.SSR_WEBNAV_CONTAINER.split(",")]:
-            if self.page.locator(sel).count() > 0:
-                return True
-        return False
+        try:
+            return self.nav_container.count() > 0
+        except Exception:
+            return False

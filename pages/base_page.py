@@ -10,6 +10,7 @@ class BasePage:
     def __init__(self, page: Page):
         self.page = page
 
+    # Selector resolution
     def _first_available(self, selector: str):
         # Returns the first locator that matches from a comma-separated list.
         for sel in [s.strip() for s in selector.split(",")]:
@@ -18,6 +19,24 @@ class BasePage:
                 return loc
         raise AssertionError(f"No selector matched: {selector}")
 
+    # Waiting helpers
+    def wait_for_visible(self, locator, timeout: int = 5000):
+        locator.wait_for(state="visible", timeout=timeout)
+        return locator
+
+    def wait_for_attached(self, locator, timeout: int = 5000):
+        locator.wait_for(state="attached", timeout=timeout)
+        return locator
+
+    def wait_for_url_contains(self, text: str, timeout: int = 15000):
+        self.page.wait_for_url(f"**{text}**", timeout=timeout)
+
+    def wait_for_selector(self, selector: str, timeout: int = 10000):
+        loc = self._first_available(selector)
+        loc.wait_for(state="visible", timeout=timeout)
+        return loc
+
+    # Interaction helpers
     def wait_and_click(self, selector: str, timeout: int = 5000):
         loc = self._first_available(selector)
         loc.wait_for(state="visible", timeout=timeout)
@@ -28,6 +47,7 @@ class BasePage:
         loc.wait_for(state="visible", timeout=timeout)
         loc.fill(value)
 
+    # Visibility check
     def is_visible(self, selector: str, timeout: int = 3000) -> bool:
         try:
             loc = self._first_available(selector)
@@ -36,12 +56,11 @@ class BasePage:
         except Exception:
             return False
 
-    def wait_for_selector(self, selector: str, timeout: int = 10000):
-        # Waits for the first available selector from a comma-separated list.
-        loc = self._first_available(selector)
-        loc.wait_for(state="visible", timeout=timeout)
-        return loc
-
+    # Logged-in check
     def wait_for_logged_in(self, timeout: int = 10000):
-        # Waits for the global navigation to confirm logged-in state.
         return self.wait_for_selector(SSR_WEBNAV_CONTAINER, timeout=timeout)
+
+    # Page-level load hook (optional override)
+    def wait_for_loaded(self):
+        # Child pages override this.
+        pass
