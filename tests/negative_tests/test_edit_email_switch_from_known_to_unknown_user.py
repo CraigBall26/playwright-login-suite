@@ -1,12 +1,12 @@
-# TC‑103 - Switch from Known to Unknown User via "Edit email"
+# TC‑104 - Switch from Known to Known User via "Edit email" (Wrong Password)
 # -------------------------------------------------------------------
 # This test validates that a user who begins logging in with a known Hudl
 # account can return to the identifier step using the “Edit email” link,
-# replace the email with an UNKNOWN user, and attempt to log in again using
-# the known user's password. Hudl should correctly reject this attempt and
-# display an appropriate error.
+# re-enter the SAME known email, and attempt to log in again using an
+# incorrect password. Hudl should correctly reject this attempt and display
+# an appropriate error.
 #
-# Trello: https://trello.com/c/oQJE7kbh/210-tc-103-switch-from-known-to-unknown-user
+# Trello: https://trello.com/c/iFdhxQmc/211-tc-104-known-user-edit-email-same-known-user-but-wrong-password
 
 import pytest
 
@@ -15,8 +15,8 @@ from pages.dashboard_page import DashboardPage
 
 
 @pytest.mark.negative
-def test_edit_email_switch_to_unknown_user(
-    fresh_page, hudl_credentials, login_data, randomized_unknown_email
+def test_edit_email_switch_to_known_user_wrong_password(
+    fresh_page, hudl_credentials, login_data
 ):
     flow = LoginFlow(fresh_page, login_data)
 
@@ -27,10 +27,10 @@ def test_edit_email_switch_to_unknown_user(
     # Now on the password page.
     flow.password.wait_for_loaded()
 
-    # Tap "Edit email" and switch to an UNKNOWN user.
+    # Tap "Edit email" and re-enter the SAME known email, but use a wrong password.
     flow.edit_identifier_and_attempt_login(
-        new_email=randomized_unknown_email,
-        password=hudl_credentials["password"],  # Known user's password
+        new_email=hudl_credentials["email"],
+        password="incorrect-password",  # Intentionally wrong
     )
 
     # Assert that the login attempt fails.
