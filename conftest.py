@@ -11,6 +11,8 @@ from pathlib import Path
 import pytest
 from dotenv import load_dotenv
 
+from flows.login_flow import LoginFlow
+
 # Load .env file automatically.
 load_dotenv()
 
@@ -67,7 +69,8 @@ def fresh_page(fresh_context):
 
 
 # HUDL CREDENTIALS
-@pytest.fixture
+# Session-scoped so authenticated_session can depend on it safely.
+@pytest.fixture(scope="session")
 def hudl_credentials():
     return {
         "email": os.getenv("HUDL_EMAIL"),
@@ -75,9 +78,52 @@ def hudl_credentials():
     }
 
 
+# ---------------------------------------------------------------------------
+# SESSION FIXTURES
+# These fixtures create and reuse a valid Hudl session.
+# Speeds up tests by skipping the login UI when not needed.
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="session")
+def authenticated_session(browser, login_data, hudl_credentials):
+    context = browser.new_context(
+        viewport={"width": 1280, "height": 800},
+        java_script_enabled=True,
+    )
+    page = context.new_page()
+
+    flow = LoginFlow(page, login_data)
+    flow.login(hudl_credentials["email"], hudl_credentials["password"])
+
+    # Wait for dashboard to fully load before saving session.
+    from pages.dashboard_page import DashboardPage
+
+    dashboard = DashboardPage(page)
+    dashboard.wait_for_loaded()
+
+    context.storage_state(path="session.json")
+    return "session.json"
+
+
+@pytest.fixture
+def context_with_session(browser, authenticated_session):
+    """
+    Provides a browser context that automatically loads the saved session.
+    Used for tests that require a logged-in user.
+    """
+    return browser.new_context(
+        viewport={"width": 1280, "height": 800},
+        java_script_enabled=True,
+        storage_state=authenticated_session,
+    )
+
+
+# ---------------------------------------------------------------------------
 # TEST DATA FIXTURES
 # Loads structured JSON files from tests/test_data/.
-# Keeps tests clean by centralising all data
+# Keeps tests clean by centralising all data.
+# ---------------------------------------------------------------------------
 
 
 def _load_json(relative_path: str):
