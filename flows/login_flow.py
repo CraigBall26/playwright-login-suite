@@ -59,3 +59,17 @@ class LoginFlow:
         self.password.submit_password(password)
 
         return self.dashboard
+
+    # Attempt to edit identifier and login (negative test).
+    def edit_identifier_and_attempt_login(self, new_email: str, password: str) -> None:
+        # Click the Edit Email link on the password page.
+        self.password.click_edit_email()
+
+        # Submit the new identifier.
+        self.identifier.submit_identifier(new_email)
+
+        # Wait for the new password page.
+        self.password.wait_for_loaded()
+
+        # Attempt login with the provided password.
+        self.password.submit_password(password)
