@@ -19,6 +19,9 @@ class LoginPasswordPage(BasePage):
         # Optional toggle (A/B tested — not guaranteed)
         self.show_password_toggle = page.locator(L.SHOW_PASSWORD_TOGGLE)
 
+        # Edit email button (returns user to identifier step)
+        self.edit_email_button = page.locator(L.EDIT_EMAIL_BUTTON)
+
         # Social login buttons
         self.google_button = page.locator(S.GOOGLE_BUTTON)
         self.facebook_button = page.locator(S.FACEBOOK_BUTTON)
@@ -33,13 +36,17 @@ class LoginPasswordPage(BasePage):
     def wait_for_loaded(self):
         self.wait_for_visible(self.password_input)
         self.wait_for_visible(self.continue_button)
-        # Toggle intentionally NOT required — optional UI
 
     # Enter the password and continue to the dashboard.
     def submit_password(self, password: str):
         self.wait_for_visible(self.password_input)
         self.password_input.fill(password)
         self.continue_button.click()
+
+    # Click the "Edit" button to return to the identifier page.
+    def click_edit_email(self):
+        self.wait_for_visible(self.edit_email_button)
+        self.edit_email_button.click()
 
     # Error assertions
     def assert_password_error(self):

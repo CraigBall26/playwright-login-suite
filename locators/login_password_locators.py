@@ -14,3 +14,6 @@ PASSWORD_ERROR_SELECTORS = [
     ".auth0-global-message-error",
     ".alert-error",
 ]
+
+# Edit email button
+EDIT_EMAIL_BUTTON = "[data-link-name='edit-username']"

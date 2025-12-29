@@ -9,28 +9,53 @@ from pages.login_password_page import LoginPasswordPage
 class LoginFlow:
     def __init__(self, page, login_data):
         self.page = page
-        self.login_data = login_data
+        self.login_url = login_data["login_url"]
 
         self.identifier = LoginIdentifierPage(page)
         self.password = LoginPasswordPage(page)
         self.dashboard = DashboardPage(page)
 
     def goto_login(self):
-        # Navigate using the URL stored in test_data
-        self.identifier.goto(self.login_data["login_url"])
+        self.page.goto(self.login_url)
 
+    # Standard positive login flow.
     def login(self, email: str, password: str) -> DashboardPage:
-        # Go to login page
         self.goto_login()
-
-        # Enter email
         self.identifier.submit_identifier(email)
+        self.password.wait_for_loaded()
+        self.password.submit_password(password)
+        return self.dashboard
 
-        # Wait for password page
+    # Login after correcting email using the Edit button.
+    def login_after_edit(self, correct_email: str, password: str) -> DashboardPage:
+        # Click the Edit Email link on the password page.
+        self.password.click_edit_email()
+
+        # Submit the corrected identifier.
+        self.identifier.submit_identifier(correct_email)
+
+        # Wait for the new password page.
         self.password.wait_for_loaded()
 
-        # Enter password
+        # Submit password and complete login.
         self.password.submit_password(password)
 
-        # Return dashboard page object
+        return self.dashboard
+
+    # Login after correcting email using the browser Back button.
+    def login_after_browser_back(
+        self, correct_email: str, password: str
+    ) -> DashboardPage:
+        # Browser back returns to the identifier page.
+        self.page.go_back()
+
+        # Submit the corrected identifier.
+        self.identifier.submit_identifier(correct_email)
+
+        # Wait for the password page again.
+        self.password.wait_for_loaded()
+
+        # Submit password and complete login.
+        self.password.submit_password(password)
+
         return self.dashboard
