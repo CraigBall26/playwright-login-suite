@@ -10,7 +10,6 @@
 import pytest
 
 from flows.login_flow import LoginFlow
-from pages.dashboard_page import DashboardPage
 
 
 @pytest.mark.negative
@@ -36,6 +35,4 @@ def test_login_with_unknown_user_and_incorrect_password(
     flow.password.assert_password_error()
 
     # Assert no redirect to dashboard.
-    dashboard = DashboardPage(fresh_page)
-    assert dashboard.any_dashboard_element_present() is False
-    assert "/home" not in fresh_page.url
+    flow.base.assert_not_on_dashboard()

@@ -56,6 +56,26 @@ class BasePage:
         except Exception:
             return False
 
+    # URL assertions
+    def assert_url_contains(self, text: str) -> None:
+        assert text in self.page.url
+
+    def assert_url_not_contains(self, text: str) -> None:
+        assert text not in self.page.url
+
+    # Visibility assertions
+    def assert_not_visible(self, selector: str) -> None:
+        element = self.page.locator(selector)
+        assert element.is_visible() is False
+
+    # Dashboard assertions
+    def assert_not_on_dashboard(self) -> None:
+        from pages.dashboard_page import DashboardPage
+
+        dashboard = DashboardPage(self.page)
+        assert dashboard.any_dashboard_element_present() is False
+        assert "/home" not in self.page.url
+
     # Logged-in check
     def wait_for_logged_in(self, timeout: int = 10000):
         return self.wait_for_selector(SSR_WEBNAV_CONTAINER, timeout=timeout)

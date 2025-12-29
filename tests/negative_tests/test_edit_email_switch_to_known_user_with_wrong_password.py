@@ -1,4 +1,4 @@
-# TC‑104 - Switch from Known to Known User via "Edit email" (Wrong Password)
+# TC‑104 - Known to Known User via "Edit email" (Wrong Password)
 # -------------------------------------------------------------------
 # This test validates that a user who begins logging in with a known Hudl
 # account can return to the identifier step using the “Edit email” link,
@@ -11,7 +11,6 @@
 import pytest
 
 from flows.login_flow import LoginFlow
-from pages.dashboard_page import DashboardPage
 
 
 @pytest.mark.negative
@@ -30,13 +29,11 @@ def test_edit_email_switch_to_known_user_wrong_password(
     # Tap "Edit email" and re-enter the SAME known email, but use a wrong password.
     flow.edit_identifier_and_attempt_login(
         new_email=hudl_credentials["email"],
-        password="incorrect-password",  # Intentionally wrong
+        password="incorrect-password",
     )
 
     # Assert that the login attempt fails.
     flow.password.assert_password_error()
 
     # Assert no redirect to dashboard.
-    dashboard = DashboardPage(fresh_page)
-    assert dashboard.any_dashboard_element_present() is False
-    assert "/home" not in fresh_page.url
+    flow.base.assert_not_on_dashboard()
