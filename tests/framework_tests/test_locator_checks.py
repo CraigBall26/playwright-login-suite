@@ -1,6 +1,6 @@
 # Test: Locator Checks
 # --------------------
-# Validates  all critical selectors in the locator layer.
+# Validates all critical selectors in the locator layer.
 # Protects the framework from selector drift and catches UI changes early.
 #
 # Trello: https://trello.com/c/jdSYIjSA/201-test-500-test-locator-checks
@@ -13,10 +13,10 @@ from pages.login_password_page import LoginPasswordPage
 
 
 @pytest.mark.framework
-def test_locator_checks(fresh_page, hudl_credentials):
+def test_locator_checks(fresh_page, hudl_credentials, login_data):
     # --- Identifier Page ---
     identifier = LoginIdentifierPage(fresh_page)
-    identifier.goto()
+    identifier.goto(login_data["login_url"])
 
     # Assert Identifier locators exist
     assert identifier.email_input.count() > 0
@@ -32,7 +32,7 @@ def test_locator_checks(fresh_page, hudl_credentials):
     assert password.continue_button.count() > 0
 
     # Use the flow to complete login cleanly
-    flow = LoginFlow(fresh_page)
+    flow = LoginFlow(fresh_page, login_data)
     dashboard = flow.login(hudl_credentials["email"], hudl_credentials["password"])
 
     # Wait for redirect before checking dashboard selectors

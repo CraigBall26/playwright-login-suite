@@ -11,15 +11,17 @@ from flows.login_flow import LoginFlow
 
 
 @pytest.mark.login
-def test_valid_login(fresh_page, hudl_credentials):
-    flow = LoginFlow(fresh_page)
+def test_valid_login(fresh_page, hudl_credentials, login_data):
+    # Use the LoginFlow wrapper to keep the steps clean.
+    flow = LoginFlow(fresh_page, login_data)
 
-    # Perform the full login sequence.
-    dashboard_page = flow.login(hudl_credentials["email"], hudl_credentials["password"])
+    # Perform a full valid login using known credentials.
+    dashboard = flow.login(hudl_credentials["email"], hudl_credentials["password"])
 
-    # Assert the dashboard is visible.
+    # Wait for redirect before checking dashboard selectors.
     fresh_page.wait_for_url("**/home", timeout=15000)
-    dashboard_page.wait_for_loaded()
+    dashboard.wait_for_loaded()
 
-    # Final sanity check: URL should contain /home once logged in.
-    assert "home" in fresh_page.url
+    # Assert that a known dashboard element is present.
+    loc = dashboard._first_available(dashboard.SSR_WEBNAV_CONTAINER)
+    assert loc.count() > 0

@@ -1,26 +1,44 @@
-# TC-001 Logout Redirects to Homepage
-# --------------------
-# Confirms that a logged-in user can successfully log out and is redirected
-# to the correct Hudl homepage.
+# TC‑001 — Logout Redirects to Homepage
+# -----------------------------------
+# Confirms that a logged‑in Hudl user is correctly logged out and redirected
+# back to the public homepage. This validates the logout flow and ensures
+# authenticated sessions are properly terminated.
 #
-# Trello: https://trello.com/c/tB7GOa79/204-tc-001-test-logout-redirects-to-hudl-homepage
+# Trello: https://trello.com/c/8yQ0QF0U/201-test-010-logout-redirects-to-homepage
+
+import pytest
 
 from flows.login_flow import LoginFlow
 from flows.logout_flow import LogoutFlow
+from pages.dashboard_page import DashboardPage
 
 
-def test_logout_redirects_to_homepage(fresh_page, hudl_credentials):
-    # Login
-    login_flow = LoginFlow(fresh_page)
+@pytest.mark.login
+def test_logout_redirects_to_homepage(fresh_page, hudl_credentials, login_data):
+    # Login using the flow wrapper.
+    login_flow = LoginFlow(fresh_page, login_data)
     dashboard = login_flow.login(
-        hudl_credentials["email"],
-        hudl_credentials["password"],
+        hudl_credentials["email"], hudl_credentials["password"]
     )
+
+    # Ensure dashboard is fully loaded before logging out.
+    fresh_page.wait_for_url("**/home", timeout=15000)
     dashboard.wait_for_loaded()
 
-    # Logout
+    # Perform logout.
     logout_flow = LogoutFlow(fresh_page)
-    page_after_logout = logout_flow.logout()
+    logout_flow.logout()
 
-    # Assert redirect to Hudl homepage
-    assert page_after_logout.url.startswith("https://www.hudl.com")
+    # Assert redirect to the public homepage.We only need to
+    # confirm that the user is no longer authenticated.
+    fresh_page.wait_for_load_state("networkidle")
+
+    # Assert we are no longer on the dashboard.
+    assert "/home" not in fresh_page.url
+
+    # Assert we are on a Hudl homepage variant.
+    assert fresh_page.url.startswith("https://www.hudl.com")
+
+    # Assert dashboard elements are no longer present.
+    dashboard = DashboardPage(fresh_page)
+    assert dashboard.any_dashboard_element_present() is False

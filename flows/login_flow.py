@@ -7,15 +7,21 @@ from pages.login_password_page import LoginPasswordPage
 
 
 class LoginFlow:
-    def __init__(self, page):
+    def __init__(self, page, login_data):
         self.page = page
+        self.login_data = login_data
+
         self.identifier = LoginIdentifierPage(page)
         self.password = LoginPasswordPage(page)
         self.dashboard = DashboardPage(page)
 
+    def goto_login(self):
+        # Navigate using the URL stored in test_data
+        self.identifier.goto(self.login_data["login_url"])
+
     def login(self, email: str, password: str) -> DashboardPage:
         # Go to login page
-        self.identifier.goto()
+        self.goto_login()
 
         # Enter email
         self.identifier.submit_identifier(email)

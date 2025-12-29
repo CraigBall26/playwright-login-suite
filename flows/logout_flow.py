@@ -16,5 +16,6 @@ class LogoutFlow:
         # Click the logout button
         self.dashboard.click_logout()
 
-        # Hudl redirects to https://www.hudl.com/en_gb/ (or region equivalent)
+        # Hudl does not navigate to a new URL after logout — it simply clears
+        # the session and reloads the same homepage URL (e.g., / or /en_gb/).
         return self.page

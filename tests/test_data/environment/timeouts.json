@@ -1,6 +1,0 @@
-// Timeout values for page loads and waits.
-// Helps keep tests consistent
-{
-    "page_load": 5000,
-    "element_wait": 3000
-}
