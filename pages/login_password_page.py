@@ -16,7 +16,7 @@ class LoginPasswordPage(BasePage):
         self.password_input = page.locator(L.PASSWORD_INPUT)
         self.continue_button = page.locator(L.CONTINUE_BUTTON)
 
-        # Optional toggle (A/B tested — not guaranteed)
+        # Toggle to show/hide password
         self.show_password_toggle = page.locator(L.SHOW_PASSWORD_TOGGLE)
 
         # Edit email button (returns user to identifier step)
@@ -33,9 +33,11 @@ class LoginPasswordPage(BasePage):
         self.terms_of_service_link = page.locator(S.TERMS_OF_SERVICE_LINK)
 
     # Ensure the password page is fully loaded before interacting.
-    def wait_for_loaded(self):
-        self.wait_for_visible(self.password_input)
-        self.wait_for_visible(self.continue_button)
+    def wait_for_loaded(self, timeout=5000):
+        # Wait for the password input and continue button. Timeout is adjustable
+        # for slow‑network environment tests.
+        self.wait_for_visible(self.password_input, timeout=timeout)
+        self.wait_for_visible(self.continue_button, timeout=timeout)
 
     # Enter the password and continue to the dashboard.
     def submit_password(self, password: str):

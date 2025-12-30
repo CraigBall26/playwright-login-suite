@@ -16,16 +16,22 @@ class LoginIdentifierPage(BasePage):
     def goto(self, url: str):
         self.page.goto(url)
 
-    def wait_for_loaded(self):
-        # Wait for core elements to be visible
-        self.wait_for_visible(self.email_input)
-        self.wait_for_visible(self.continue_button)
+    # Ensure the identifier page is fully loaded before interacting.
+    def goto_login(self, url: str):
+        self.page.goto(url)
+        self.wait_for_loaded()
+
+    def wait_for_loaded(self, timeout=5000):
+        # Wait for core elements to be visible. Timeout is adjustable for
+        # slow‑network environment tests.
+        self.wait_for_visible(self.email_input, timeout=timeout)
+        self.wait_for_visible(self.continue_button, timeout=timeout)
 
     def submit_identifier(self, email: str):
         # Wait for email input to be visible before interacting
         self.wait_for_visible(self.email_input)
-        self.email_input.fill(email)
-        self.continue_button.click()
+        self.wait_and_fill(L.EMAIL_INPUT, email)
+        self.wait_and_click(L.CONTINUE_BUTTON)
 
     # Error assertions
 

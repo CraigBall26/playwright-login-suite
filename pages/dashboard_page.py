@@ -24,7 +24,7 @@ class DashboardPage(BasePage):
 
     def open_user_menu(self):
         # Opens the user menu in the SSR WebNav header.
-        # Prefer the existing button if visible (your original behaviour)
+        # Prefer the existing button if visible
         if self.page.locator(self.USER_MENU_BUTTON).is_visible():
             self.page.click(self.USER_MENU_BUTTON)
         else:
@@ -41,3 +41,16 @@ class DashboardPage(BasePage):
     def any_dashboard_element_present(self) -> bool:
         # Used by negative login tests to confirm we did NOT reach the dashboard.
         return self.page.locator(self.SSR_WEBNAV_CONTAINER).is_visible()
+
+    # Explicit assertions for clarity in tests
+    def assert_on_dashboard(self) -> None:
+        self.wait_for_loaded()
+        assert "/home" in self.page.url
+
+    def assert_not_on_dashboard(self) -> None:
+        assert self.any_dashboard_element_present() is False
+        assert "/home" not in self.page.url
+
+    # Helper for slow-load scenarios
+    def wait_for_loaded_slow(self):
+        self.wait_for_loaded(timeout=20000)

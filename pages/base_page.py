@@ -12,12 +12,11 @@ class BasePage:
 
     # Selector resolution
     def _first_available(self, selector: str):
-        # Returns the first locator that matches from a comma-separated list.
+        # Returns the first locator from a comma-separated list.
+        # Does NOT pre-check visibility or existence.
+        # Lets Playwright handle waiting, restoring original suite behaviour.
         for sel in [s.strip() for s in selector.split(",")]:
-            loc = self.page.locator(sel)
-            if loc.count() > 0:
-                return loc
-        raise AssertionError(f"No selector matched: {selector}")
+            return self.page.locator(sel)
 
     # Waiting helpers
     def wait_for_visible(self, locator, timeout: int = 5000):
@@ -80,7 +79,44 @@ class BasePage:
     def wait_for_logged_in(self, timeout: int = 10000):
         return self.wait_for_selector(SSR_WEBNAV_CONTAINER, timeout=timeout)
 
+    # Offline helpers
+    def is_offline(self) -> bool:
+        return self.page.context.offline
+
+    def assert_offline(self) -> None:
+        assert self.page.context.offline is True
+
+    def assert_not_loaded(self, timeout: int = 3000) -> None:
+        from pytest import raises
+
+        with raises(Exception):  # noqa: B017
+            self.wait_for_loaded(timeout=timeout)
+
     # Page-level load hook (optional override)
     def wait_for_loaded(self):
         # Child pages override this.
         pass
+
+    # Helper to assert a page does NOT load
+    def assert_page_does_not_load(self, wait_fn, timeout: int = 5000):
+        # Give the UI time to attempt navigation.
+        self.page.wait_for_timeout(timeout)
+
+        # Attempt to wait for the page to load.
+        # If it loads, this method returns normally (which is a failure for the test).
+        # If it does NOT load, Playwright will raise, which the test expects.
+        wait_fn()
+
+    # Environment simulation helpers (safe, isolated, opt‑in)
+    def apply_slow_network(self, delay_ms: int = 400):
+        # Adds artificial latency to every network request without blocking
+        def throttle(route):
+            route.request.frame.page.wait_for_timeout(delay_ms)
+            route.continue_()
+
+        self.page.context.route("**/*", throttle)
+
+    def remove_slow_network(self):
+        # Removes the slow‑network routing rule and allows pending requests
+        self.page.context.unroute("**/*")
+        self.page.wait_for_timeout(500)

@@ -4,23 +4,22 @@
 # predictable when the network connection is intentionally slowed.
 # This simulates real‑world conditions coaches experience on the
 # practice field, on team buses, or in congested stadium WiFi
-# environments. Even under these “third‑and‑long” network conditions,
-# the login flow should remain functional and responsive.
+# environments.
 #
 # Trello: https://trello.com/c/XpkJsh7S/218-tc-300-slow-network-login-attempt
 
-import time
-
 from flows.login_flow import LoginFlow
+from pages.base_page import BasePage
 
 
 def test_slow_network_login(page, hudl_credentials, login_data):
-    # Apply throttling to simulate slow network conditions.
-    def throttle(route):
-        time.sleep(0.4)  # 400ms artificial latency per request
-        route.continue_()
+    base = BasePage(page)
 
-    page.context.route("**/*", throttle)
+    # Apply slow network simulation
+    base.apply_slow_network(delay_ms=400)
+
+    # Increase default timeout for slow-network conditions
+    page.set_default_timeout(20000)
 
     flow = LoginFlow(page, login_data)
 
@@ -30,9 +29,8 @@ def test_slow_network_login(page, hudl_credentials, login_data):
         hudl_credentials["password"],
     )
 
-    # Allow extra time for the dashboard to load
+    # Allow extra time for dashboard to load
     dashboard.wait_for_loaded(timeout=20000)
 
-    # Remove throttling after the test and allow pending requests to settle.
-    page.context.unroute("**/*")
-    time.sleep(2)
+    # Clean up routing
+    base.remove_slow_network()
