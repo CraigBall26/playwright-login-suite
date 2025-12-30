@@ -16,9 +16,11 @@ class DashboardPage(BasePage):
     USER_MENU_DROPDOWN = USER_MENU_DROPDOWN
     LOGOUT_BUTTON = LOGOUT_BUTTON
 
-    def wait_for_loaded(self):
-        # Wait for the SSR WebNav container to appear — unique to the dashboard.
-        self.page.wait_for_selector(self.SSR_WEBNAV_CONTAINER, timeout=5000)
+    def wait_for_loaded(self, timeout=5000):
+        # Waits for the SSR WebNav container — the clearest signal the
+        # dashboard has finished loading. Timeout is adjustable for
+        # slow‑network environment tests.
+        self.page.wait_for_selector(self.SSR_WEBNAV_CONTAINER, timeout=timeout)
 
     def open_user_menu(self):
         # Opens the user menu in the SSR WebNav header.
