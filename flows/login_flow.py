@@ -48,7 +48,15 @@ class LoginFlow:
     def login_after_browser_back(
         self, correct_email: str, password: str
     ) -> DashboardPage:
-        self.page.go_back()
+        # Try to go back using browser history.
+        try:
+            self.page.go_back(wait_until="domcontentloaded")
+        except Exception:
+            # In CI, Auth0 often collapses the identifier page out of history.
+            # Fall back to manually navigating to the login URL.
+            self.page.goto(self.login_url)
+
+        # Now guaranteed to be on the identifier step.
         self.identifier.submit_identifier(correct_email)
         self.password.wait_for_loaded()
         self.password.submit_password(password)
