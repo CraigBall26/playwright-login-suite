@@ -9,3 +9,10 @@ INVALID_EMAIL_FORMATS = {
     "spaces_in_email": "san francisco49ers@fakehudl.com",
     "unicode_characters": "rams🏈@fakehudl.com",
 }
+
+INVALID_EMAIL_DOMAINS = {
+    "bills@hudl",
+    "saints@hudl.x",
+    "falcons@fake..com",
+    "texans@.fakehudl.com",
+}

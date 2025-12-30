@@ -19,3 +19,10 @@ def test_invalid_domain_email(page, login_data, email):
 
     # Submit the invalid domain email.
     identifier = flow.identifier
+    identifier.submit_identifier(email)
+
+    # Assert that we are STILL on the identifier step
+    identifier.assert_still_on_identifier_step()
+
+    # Assert that the appropriate error is shown.
+    identifier.assert_invalid_email_error()
