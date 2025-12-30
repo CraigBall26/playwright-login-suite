@@ -16,3 +16,11 @@ INVALID_EMAIL_DOMAINS = {
     "falcons@fake..com",
     "texans@.fakehudl.com",
 }
+
+INVALID_EMAIL_DISALLOWED_CHARS = {
+    "brady()@hudl.com",
+    "moss[]@hudl.com",
+    "kelce;@hudl.com",
+    "watt,@hudl.com",
+    "revis🔥@hudl.com",
+}
