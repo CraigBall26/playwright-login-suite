@@ -13,24 +13,23 @@ from flows.logout_flow import LogoutFlow
 from pages.dashboard_page import DashboardPage
 
 
-@pytest.mark.login
+@pytest.mark.positive
 def test_logout_redirects_to_homepage(fresh_page, hudl_credentials, login_data):
     # Login using the flow wrapper.
     login_flow = LoginFlow(fresh_page, login_data)
     dashboard = login_flow.login(
-        hudl_credentials["email"], hudl_credentials["password"]
+        hudl_credentials["email"],
+        hudl_credentials["password"],
     )
 
-    # Ensure dashboard is fully loaded before logging out.
-    fresh_page.wait_for_url("**/home", timeout=15000)
+    # Confirm the dashboard has fully loaded before logging out.
     dashboard.wait_for_loaded()
 
     # Perform logout.
     logout_flow = LogoutFlow(fresh_page)
     logout_flow.logout()
 
-    # Assert redirect to the public homepage.We only need to
-    # confirm that the user is no longer authenticated.
+    # Wait for the public homepage to settle.
     fresh_page.wait_for_load_state("networkidle")
 
     # Assert we are no longer on the dashboard.

@@ -15,18 +15,18 @@ from flows.login_flow import LoginFlow
 def test_session_remains_active_after_refresh(fresh_page, hudl_credentials, login_data):
     page = fresh_page
 
-    # Log in using the LoginFlow
-    login = LoginFlow(page, login_data)
-    dashboard = login.login(
+    # Log in using the LoginFlow.
+    login_flow = LoginFlow(page, login_data)
+    dashboard = login_flow.login(
         email=hudl_credentials["email"],
         password=hudl_credentials["password"],
     )
 
-    # Confirm dashboard is visible
+    # Confirm the dashboard is fully loaded.
     dashboard.wait_for_loaded()
 
-    # Refresh the page
+    # Refresh the page.
     page.reload()
 
-    # Confirm dashboard is still visible (session persisted)
+    # Confirm the dashboard is still visible (session persisted).
     dashboard.wait_for_loaded()

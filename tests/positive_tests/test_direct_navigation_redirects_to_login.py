@@ -4,7 +4,6 @@
 # Hudl should always redirect unauthenticated users back to the login page.
 #
 # Trello: https://trello.com/c/4t6JKEzZ/206-tc-003-direct-navigation-to-home-when-logged-out-redirects-to-login
-#
 
 import pytest
 
@@ -16,13 +15,13 @@ from pages.login_identifier_page import LoginIdentifierPage
 def test_direct_navigation_redirects_to_login(fresh_page, env_urls):
     page = fresh_page
 
-    # Navigate directly to the authenticated /home route while logged out
+    # Navigate directly to the authenticated /home route while logged out.
     page.goto(env_urls["home_url"])
 
-    # Confirm we are redirected to the login identifier page
+    # Confirm we are redirected to the login identifier page.
     login_page = LoginIdentifierPage(page)
     login_page.wait_for_loaded()
 
-    # Assert dashboard is NOT visible (preserve original intent)
+    # Assert dashboard elements are not visible.
     dashboard = DashboardPage(page)
     assert page.locator(dashboard.SSR_WEBNAV_CONTAINER).count() == 0

@@ -1,4 +1,4 @@
-# TC-000: Valid Login
+# TC‑000: Valid Login
 # -------------------
 # Full end‑to‑end login using the real Auth0 UI, confirming that a valid user
 # can authenticate successfully and reach a logged‑in state.
@@ -10,16 +10,18 @@ import pytest
 from flows.login_flow import LoginFlow
 
 
-@pytest.mark.login
+@pytest.mark.positive
 def test_valid_login(fresh_page, hudl_credentials, login_data):
     # Use the LoginFlow wrapper to keep the steps clean.
     flow = LoginFlow(fresh_page, login_data)
 
     # Perform a full valid login using known credentials.
-    dashboard = flow.login(hudl_credentials["email"], hudl_credentials["password"])
+    dashboard = flow.login(
+        hudl_credentials["email"],
+        hudl_credentials["password"],
+    )
 
-    # Wait for redirect before checking dashboard selectors.
-    fresh_page.wait_for_url("**/home", timeout=15000)
+    # Confirm the dashboard has fully loaded using the canonical sync point.
     dashboard.wait_for_loaded()
 
     # Assert that a known dashboard element is present.

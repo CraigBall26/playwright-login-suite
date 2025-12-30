@@ -17,7 +17,7 @@ from flows.login_flow import LoginFlow
 from pages.login_password_page import LoginPasswordPage
 
 
-@pytest.mark.login
+@pytest.mark.positive
 def test_back_navigation_via_browser_button(
     fresh_page, hudl_credentials, login_data, randomized_unknown_email
 ):
@@ -27,14 +27,13 @@ def test_back_navigation_via_browser_button(
     flow.goto_login()
     flow.identifier.submit_identifier(randomized_unknown_email)
 
-    # Complete login after correcting email using browser Back.
+    # Complete login after correcting email using the browser Back button.
     dashboard = flow.login_after_browser_back(
         correct_email=hudl_credentials["email"],
         password=hudl_credentials["password"],
     )
 
-    # Confirm dashboard loaded.
-    fresh_page.wait_for_url("**/home", timeout=15000)
+    # Confirm the dashboard has fully loaded.
     dashboard.wait_for_loaded()
 
 
@@ -58,6 +57,5 @@ def test_back_navigation_via_edit_button(
         password=hudl_credentials["password"],
     )
 
-    # Confirm dashboard loaded.
-    fresh_page.wait_for_url("**/home", timeout=15000)
+    # Confirm the dashboard has fully loaded.
     dashboard.wait_for_loaded()
