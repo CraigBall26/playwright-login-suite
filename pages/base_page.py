@@ -9,6 +9,7 @@ from locators.dashboard_locators import SSR_WEBNAV_CONTAINER
 class BasePage:
     def __init__(self, page: Page):
         self.page = page
+        self._slow_network_handler = None  # store handler for safe removal
 
     # Selector resolution
     def _first_available(self, selector: str):
@@ -86,12 +87,6 @@ class BasePage:
     def assert_offline(self) -> None:
         assert self.page.context.offline is True
 
-    def assert_not_loaded(self, timeout: int = 3000) -> None:
-        from pytest import raises
-
-        with raises(Exception):  # noqa: B017
-            self.wait_for_loaded(timeout=timeout)
-
     # Page-level load hook (optional override)
     def wait_for_loaded(self):
         # Child pages override this.
@@ -108,15 +103,16 @@ class BasePage:
         wait_fn()
 
     # Environment simulation helpers (safe, isolated, opt‑in)
-    def apply_slow_network(self, delay_ms: int = 400):
-        # Adds artificial latency to every network request without blocking
-        def throttle(route):
-            route.request.frame.page.wait_for_timeout(delay_ms)
-            route.continue_()
+    def apply_slow_network(self, delay_ms):
+        # Store the handler so it can be removed later.
+        def handler(route):
+            route.continue_(delay=delay_ms)
 
-        self.page.context.route("**/*", throttle)
+        self._slow_network_handler = handler
+        self.page.context.route("**/*", handler)
 
     def remove_slow_network(self):
-        # Removes the slow‑network routing rule and allows pending requests
-        self.page.context.unroute("**/*")
-        self.page.wait_for_timeout(500)
+        # Remove only the handler we added.
+        if self._slow_network_handler:
+            self.page.context.unroute("**/*", self._slow_network_handler)
+            self._slow_network_handler = None

@@ -9,6 +9,8 @@
 # Trello: https://trello.com/c/0n7PuK9K/220-tc302-offline-after-password-page
 
 
+from typing import Any
+
 import pytest
 from playwright.sync_api import TimeoutError
 
@@ -17,26 +19,35 @@ from pages.dashboard_page import DashboardPage
 
 
 @pytest.mark.environment
-def test_offline_after_password_page(fresh_page, login_data, randomized_known_email):
+def test_offline_after_password_page(
+    fresh_page: Any,
+    login_data: Any,
+):
     page = fresh_page
     flow = LoginFlow(page, login_data)
 
-    # Navigate to the password page while online.
-    password_page = flow.goto_password_page(randomized_known_email)
+    # Pull the incorrect-but-valid credentials directly from login_data.json
+    creds = login_data["valid_but_incorrect_credentials"]
 
-    # Instantiate the dashboard page object while still online.
-    dashboard_page = DashboardPage(page)
+    try:
+        # Navigate to the password page while online.
+        flow.goto_login()
+        flow.identifier.submit_identifier(creds["email"])
 
-    # Now simulate offline mode.
-    page.context.set_offline(True)
+        # Instantiate the dashboard page object while still online.
+        dashboard_page = DashboardPage(page)
 
-    # Attempt to submit a password while offline.
-    password_page.submit_password("any-password")
+        # Now simulate offline mode.
+        page.context.set_offline(True)
 
-    # Assert that the dashboard does NOT load.
-    # Playwright raises TimeoutError when the expected selector never appears.
-    with pytest.raises(TimeoutError):
-        dashboard_page.wait_for_loaded(timeout=5000)
+        # Attempt to submit a password while offline.
+        flow.password.submit_password(creds["password"])
 
-    # Restore network for teardown.
-    page.context.set_offline(False)
+        # Assert that the dashboard does NOT load.
+        with pytest.raises(TimeoutError):
+            dashboard_page.wait_for_loaded(timeout=5000)
+
+    finally:
+        # Restore network and routing for teardown.
+        page.context.set_offline(False)
+        page.context.unroute("**/*")
