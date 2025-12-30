@@ -8,9 +8,14 @@ from pages.login_password_page import LoginPasswordPage
 
 
 class LoginFlow:
-    def __init__(self, page, login_data):
+    def __init__(self, page, login_data=None):
         self.page = page
-        self.login_url = login_data["login_url"]
+
+        # Allow negative tests (like TC‑106) to skip passing login_data.
+        # Positive tests still pass the full JSON object.
+        self.login_url = (
+            login_data["login_url"] if login_data else "https://www.hudl.com/login"
+        )
 
         # Base helpers (URL checks, visibility checks, dashboard checks)
         self.base = BasePage(page)

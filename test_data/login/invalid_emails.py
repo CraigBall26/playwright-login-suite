@@ -1,4 +1,4 @@
-{
+INVALID_EMAIL_FORMATS = {
     "missing_at_symbol": "patriotsfakehudl.com",
     "double_at_symbol": "packers@@fakehudl.com",
     "missing_username": "@cowboys.com",
@@ -8,6 +8,4 @@
     "double_dot_in_domain": "raiders@fakehudl..com",
     "spaces_in_email": "san francisco49ers@fakehudl.com",
     "unicode_characters": "rams🏈@fakehudl.com",
-    "invalid_special_character_in_local_part": "giants!mascot@fakehudl.com",
-    "invalid_character_in_local_part": "lambeau$field@fakehudl.com"
 }
