@@ -54,3 +54,9 @@ class DashboardPage(BasePage):
     # Helper for slow-load scenarios
     def wait_for_loaded_slow(self):
         self.wait_for_loaded(timeout=20000)
+
+    def logout(self):
+        # Opens the user menu and clicks the logout button.
+        # Hudl’s SSR WebNav requires a hover or button click to reveal the menu.
+        self.open_user_menu()
+        self.click_logout()

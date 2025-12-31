@@ -116,3 +116,8 @@ class BasePage:
         if self._slow_network_handler:
             self.page.context.unroute("**/*", self._slow_network_handler)
             self._slow_network_handler = None
+
+    # Helper to open a new tab with the same context
+    def open_new_tab(self):
+        new_page = self.page.context.new_page()
+        return BasePage(new_page)
