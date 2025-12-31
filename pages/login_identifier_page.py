@@ -3,6 +3,7 @@
 from playwright.sync_api import Page
 
 from locators import login_identifier_locators as L  # noqa: N812
+from locators.shared_locators import SharedLocators
 from pages.base_page import BasePage
 
 
@@ -52,3 +53,47 @@ class LoginIdentifierPage(BasePage):
 
     def assert_password_input_not_visible(self) -> None:
         self.assert_not_visible("input[type='password']")
+
+    # Click Social Media Buttons
+    @property
+    def google_button(self):
+        return self.page.locator(SharedLocators.GOOGLE_BUTTON)
+
+    @property
+    def apple_button(self):
+        return self.page.locator(SharedLocators.APPLE_BUTTON)
+
+    @property
+    def facebook_button(self):
+        return self.page.locator(SharedLocators.FACEBOOK_BUTTON)
+
+    def click_google_and_capture(self):
+        with self.page.expect_navigation() as nav:
+            self.google_button.click()
+        return nav.value.url
+
+    def click_apple_and_capture(self):
+        with self.page.expect_navigation() as nav:
+            self.apple_button.click()
+        return nav.value.url
+
+    def click_facebook_and_capture(self):
+        with self.page.expect_navigation() as nav:
+            self.facebook_button.click()
+        return nav.value.url
+
+    from locators.shared_locators import SharedLocators
+
+    @property
+    def privacy_policy_link(self):
+        return self.page.locator(SharedLocators.PRIVACY_POLICY_LINK)
+
+    @property
+    def terms_of_service_link(self):
+        return self.page.locator(SharedLocators.TERMS_OF_SERVICE_LINK)
+
+    def click_privacy_policy(self):
+        self.privacy_policy_link.click()
+
+    def click_terms_of_service(self):
+        self.terms_of_service_link.click()

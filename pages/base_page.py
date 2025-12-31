@@ -121,3 +121,10 @@ class BasePage:
     def open_new_tab(self):
         new_page = self.page.context.new_page()
         return BasePage(new_page)
+
+    def click_and_capture_popup(self, click_fn, expected_substring: str):
+        with self.page.expect_popup() as popup:
+            click_fn()
+        popup_page = popup.value
+        assert expected_substring.lower() in popup_page.url.lower()
+        popup_page.close()

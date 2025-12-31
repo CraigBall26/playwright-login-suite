@@ -1,9 +1,9 @@
-# Test: Locator Checks
+# TC200: Framework Locator Stability
 # --------------------
 # Validates all critical selectors in the locator layer.
 # Protects the framework from selector drift and catches UI changes early.
 #
-# Trello: https://trello.com/c/jdSYIjSA/201-test-500-test-locator-checks
+# Trello: https://trello.com/c/Ws5Tpkcx/224-tc200-framework-locator-stability
 
 import pytest
 
@@ -13,8 +13,8 @@ from pages.login_password_page import LoginPasswordPage
 
 
 @pytest.mark.framework
-def test_locator_checks(fresh_page, hudl_credentials, login_data):
-    # --- Identifier Page ---
+def test_framework_locator_stability(fresh_page, hudl_credentials, login_data):
+    # Identifier Page
     identifier = LoginIdentifierPage(fresh_page)
     identifier.goto(login_data["login_url"])
 

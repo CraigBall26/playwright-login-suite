@@ -1,4 +1,5 @@
 # Locators for the identifier (email) step of the login flow only
+from locators.shared_locators import SharedLocators
 
 # Inputs
 EMAIL_INPUT = "role=textbox[name='Email']"
@@ -24,3 +25,18 @@ IDENTIFIER_ERROR_SELECTORS = (
     "div[class*='error']:has-text('email')",
     "p:has-text('email')",
 )
+
+
+@property
+def google_button(self):
+    return self.page.locator(SharedLocators.GOOGLE_BUTTON)
+
+
+@property
+def apple_button(self):
+    return self.page.locator(SharedLocators.APPLE_BUTTON)
+
+
+@property
+def facebook_button(self):
+    return self.page.locator(SharedLocators.FACEBOOK_BUTTON)

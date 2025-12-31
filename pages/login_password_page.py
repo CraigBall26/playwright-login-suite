@@ -27,10 +27,8 @@ class LoginPasswordPage(BasePage):
         self.facebook_button = page.locator(S.FACEBOOK_BUTTON)
         self.apple_button = page.locator(S.APPLE_BUTTON)
 
-        # Footer links
+        # Links
         self.create_account_link = page.locator(S.CREATE_ACCOUNT_LINK)
-        self.privacy_policy_link = page.locator(S.PRIVACY_POLICY_LINK)
-        self.terms_of_service_link = page.locator(S.TERMS_OF_SERVICE_LINK)
 
     # Ensure the password page is fully loaded before interacting.
     def wait_for_loaded(self, timeout=5000):
@@ -82,3 +80,11 @@ class LoginPasswordPage(BasePage):
 
     def click_terms_of_service(self):
         self.terms_of_service_link.click()
+
+    @property
+    def privacy_policy_link(self):
+        return self.page.locator(S.PRIVACY_POLICY_LINK)
+
+    @property
+    def terms_of_service_link(self):
+        return self.page.locator(S.TERMS_OF_SERVICE_LINK)
