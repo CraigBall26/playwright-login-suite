@@ -33,7 +33,7 @@ def test_logout_redirects_to_homepage(fresh_page, hudl_credentials, login_data):
     fresh_page.wait_for_load_state("networkidle")
 
     # Assert we are no longer on the dashboard.
-    assert "/home" not in fresh_page.url
+    assert dashboard._first_available(dashboard.SSR_WEBNAV_CONTAINER).count() == 0
 
     # Assert we are on a Hudl homepage variant.
     assert fresh_page.url.startswith("https://www.hudl.com")
