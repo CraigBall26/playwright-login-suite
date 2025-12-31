@@ -15,6 +15,7 @@ Automated tests for the Hudl login flow using Playwright (Python). This reposito
 - [Author](#author)  
 - [Notes](#notes)
 
+
 ---
 
 ## What this project covers
@@ -41,6 +42,7 @@ code/
   login/
 ```
 
+
 ---
 
 ## Folder overview
@@ -52,10 +54,12 @@ code/
 
 Keeping selectors and page behaviours separated reduces duplication and improves maintainability.
 
+
 ---
 
 ## Test coverage
 All test IDs and descriptions are listed in [TEST_COVERAGE.md](./TEST_COVERAGE.md).
+
 
 ---
 
@@ -67,15 +71,18 @@ All test IDs and descriptions are listed in [TEST_COVERAGE.md](./TEST_COVERAGE.m
 
 Python was chosen for familiarity and to keep focus on tests rather than learning new syntax.
 
+
 ---
 
 ## Setup & running the tests
 Full setup and run instructions are available in [SETUP.md](./SETUP.md). That document covers installation, environment variables, and how to execute the suite.
 
+
 ---
 
 ## Credentials
 Credentials are loaded from environment variables. No sensitive data is stored in the repository.
+
 
 ---
 
@@ -83,6 +90,7 @@ Credentials are loaded from environment variables. No sensitive data is stored i
 Craig Ball — Senior QA Engineer
 
 I’m an American football fan, which influences how I think about realistic user scenarios and edge cases.
+
 
 ---
 
