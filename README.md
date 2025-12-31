@@ -79,7 +79,7 @@ Python was chosen for familiarity and to keep focus on tests rather than learnin
 
 ---
 
-## Setup & running the tests
+## 🚀 Setup & running the tests
 
 Full setup and run instructions are available in [SETUP.md](./SETUP.md). That document covers installation, environment variables, and how to execute the suite.
 
