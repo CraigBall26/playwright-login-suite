@@ -17,7 +17,6 @@ Automated tests for the Hudl login flow using Playwright (Python). This reposito
 - [Notes](#notes)
 
 
-/n
 
 ## What this project covers
 
