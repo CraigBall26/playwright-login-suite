@@ -34,6 +34,9 @@ def test_offline_after_password_page(
         flow.goto_login()
         flow.identifier.submit_identifier(creds["email"])
 
+        # Ensure the password page is fully loaded before going offline
+        flow.password.wait_for_loaded()
+
         # Instantiate the dashboard page object while still online.
         dashboard_page = DashboardPage(page)
 
