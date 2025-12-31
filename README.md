@@ -5,6 +5,7 @@ Automated tests for the Hudl login flow using Playwright (Python). This reposito
 ---
 
 ## Table of contents
+
 - [What this project covers](#what-this-project-covers)  
 - [Project structure](#project-structure)  
 - [Folder overview](#folder-overview)  
@@ -19,6 +20,7 @@ Automated tests for the Hudl login flow using Playwright (Python). This reposito
 ---
 
 ## What this project covers
+
 - A simple, readable automation framework with minimal complexity.  
 - Positive, negative, environment-based, and framework tests.  
 - Realistic user interaction scenarios for the Hudl login flow.
@@ -26,6 +28,7 @@ Automated tests for the Hudl login flow using Playwright (Python). This reposito
 ---
 
 ## Project structure
+
 Root folders:
 ```
 code/
@@ -46,6 +49,7 @@ code/
 ---
 
 ## Folder overview
+
 - locators/ — centralised selectors for stability  
 - pages/ — page objects (Identifier, Password, Dashboard)  
 - flows/ — small reusable steps (e.g., login, logout)  
@@ -58,6 +62,7 @@ Keeping selectors and page behaviours separated reduces duplication and improves
 ---
 
 ## Test coverage
+
 All test IDs and descriptions are listed in [TEST_COVERAGE.md](./TEST_COVERAGE.md).
 
 
@@ -75,18 +80,21 @@ Python was chosen for familiarity and to keep focus on tests rather than learnin
 ---
 
 ## Setup & running the tests
+
 Full setup and run instructions are available in [SETUP.md](./SETUP.md). That document covers installation, environment variables, and how to execute the suite.
 
 
 ---
 
 ## Credentials
+
 Credentials are loaded from environment variables. No sensitive data is stored in the repository.
 
 
 ---
 
 ## Author
+
 Craig Ball — Senior QA Engineer
 
 I’m an American football fan, which influences how I think about realistic user scenarios and edge cases.
@@ -95,6 +103,7 @@ I’m an American football fan, which influences how I think about realistic use
 ---
 
 ## Notes
+
 - The suite is intentionally focused on the login flow.  
 - Tests run against the public Hudl UI.  
 - Selectors are centralised to help keep tests stable.  
