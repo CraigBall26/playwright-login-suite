@@ -283,4 +283,4 @@ Environment tests reflect real situations Hudl users encounter — especially co
 | **TC‑302** | Offline before password page | Shows the correct message when going offline early. Reflects losing Wi‑Fi while entering an email. |
 | **TC‑303** | Offline after password page | Handles offline state mid‑flow without crashing. Matches unstable stadium or school Wi‑Fi. |
 | **TC‑304** | Offline login attempt | Blocks login attempts when offline. Mirrors trying to sign in on a bus or train with no signal. |
-| **TC‑305** | Slow network login (removed) | Originally tested slow‑network behaviour but was removed for instability. Kept for completeness. |
+| **TC‑305** | Slow network login 
