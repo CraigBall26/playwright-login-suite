@@ -64,6 +64,21 @@ class LoginIdentifierPage(BasePage):
 
     # Validation helpers ----------------------------
 
+    def assert_email_input_present(self):
+        assert self.page.locator(self.email_input).count() > 0
+
+    def assert_continue_button_present(self):
+        assert self.page.locator(self.continue_button).count() > 0
+
+    def assert_google_button_present(self):
+        assert self.google_button.count() > 0
+
+    def assert_apple_button_present(self):
+        assert self.apple_button.count() > 0
+
+    def assert_facebook_button_present(self):
+        assert self.facebook_button.count() > 0
+
     def assert_empty_email_error(self):
         self.wait_for_selector(self.empty_email_error)
 
@@ -87,6 +102,14 @@ class LoginIdentifierPage(BasePage):
     def assert_still_on_identifier_step(self, timeout: int = 3000):
         self.assert_url_contains("identifier", timeout=timeout)
         self.wait_for_selector(self.email_input, timeout=timeout)
+
+    # Footer link assertions ------------------------
+
+    def assert_privacy_policy_present(self):
+        assert self.privacy_policy_link.count() > 0
+
+    def assert_terms_of_service_present(self):
+        assert self.terms_of_service_link.count() > 0
 
     # Footer link interactions ----------------------
 

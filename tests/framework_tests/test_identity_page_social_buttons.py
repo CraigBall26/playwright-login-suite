@@ -1,6 +1,7 @@
-# Series 200 – Framework & Locator Stability
-# Test 201 – Identity Page Social Buttons
-# Validates that all social login buttons exist and navigate to the correct providers.
+# TC‑201: Identity Page Social Buttons
+# -------------------------------------------------------------------
+# Validates that all social login buttons on the identity step are present
+# and that each redirects to the correct provider domain.
 
 import pytest
 
@@ -17,9 +18,9 @@ def test_identity_page_social_buttons(fresh_page, login_data):
     identifier.wait_for_loaded()
 
     # Locator presence checks
-    assert identifier.google_button.count() > 0
-    assert identifier.apple_button.count() > 0
-    assert identifier.facebook_button.count() > 0
+    identifier.assert_google_button_present()
+    identifier.assert_apple_button_present()
+    identifier.assert_facebook_button_present()
 
     # Redirect domain checks
     # Google

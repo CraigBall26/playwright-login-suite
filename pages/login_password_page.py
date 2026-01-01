@@ -64,7 +64,13 @@ class LoginPasswordPage(BasePage):
 
     # Validation helpers -----------------------------------
 
-    def assert_password_error(self, timeout: int = 2000):
+    def assert_password_input_present(self):
+        assert self.page.locator(self.password_input).count() > 0
+
+    def assert_submit_button_present(self):
+        assert self.page.locator(self.submit_button).count() > 0
+
+    def assert_password_error(self, timeout: int = 3000):
         for selector in self.error_selectors:
             if self.is_visible(selector):
                 return
@@ -91,6 +97,14 @@ class LoginPasswordPage(BasePage):
     def click_edit_email(self):
         loc = self._first_available(self.edit_email_button)
         loc.click()
+
+    # Footer link assertions -------------------------------
+
+    def assert_privacy_policy_present(self):
+        assert self.privacy_policy_link.count() > 0
+
+    def assert_terms_of_service_present(self):
+        assert self.terms_of_service_link.count() > 0
 
     # Footer link interactions ------------------------------
 

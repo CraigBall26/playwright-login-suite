@@ -1,9 +1,8 @@
-# TC200: Framework Locator Stability
-# --------------------
-# Validates all critical selectors in the locator layer.
-# Protects the framework from selector drift and catches UI changes early.
-#
-# Trello: https://trello.com/c/Ws5Tpkcx/224-tc200-framework-locator-stability
+# TC‑200: Framework Locator Stability
+# -------------------------------------------------------------------
+# Validates that all critical selectors in the locator layer resolve
+# correctly. Protects the framework from selector drift and catches UI
+# changes early.
 
 import pytest
 
@@ -19,8 +18,10 @@ def test_framework_locator_stability(fresh_page, hudl_credentials, login_data):
     identifier.goto(login_data["login_url"])
 
     # Assert Identifier locators exist
-    assert fresh_page.locator(identifier.email_input).count() > 0
-    assert fresh_page.locator(identifier.continue_button).count() > 0
+    identifier.assert_email_input_present()
+    identifier.assert_continue_button_present()
+    identifier.assert_privacy_policy_present()
+    identifier.assert_terms_of_service_present()
 
     # Proceed to Password Page
     identifier.submit_identifier(hudl_credentials["email"])
@@ -28,8 +29,10 @@ def test_framework_locator_stability(fresh_page, hudl_credentials, login_data):
     password.wait_for_loaded()
 
     # Assert Password locators exist
-    assert fresh_page.locator(password.password_input).count() > 0
-    assert fresh_page.locator(password.submit_button).count() > 0
+    password.assert_password_input_present()
+    password.assert_submit_button_present()
+    password.assert_privacy_policy_present()
+    password.assert_terms_of_service_present()
 
     # Use the flow to complete login cleanly
     flow = LoginFlow(fresh_page, login_data)
@@ -40,5 +43,4 @@ def test_framework_locator_stability(fresh_page, hudl_credentials, login_data):
     dashboard.wait_for_loaded()
 
     # Dashboard locators
-    loc = dashboard._first_available(dashboard.SSR_WEBNAV_CONTAINER)
-    assert loc.count() > 0
+    dashboard.assert_webnav_present()

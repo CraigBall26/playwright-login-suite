@@ -46,8 +46,11 @@ class DashboardPage(BasePage):
         return self.page.locator(self.SSR_WEBNAV_CONTAINER).is_visible()
 
     # Explicit assertions for clarity in tests
+    def assert_webnav_present(self):
+        loc = self._first_available(self.SSR_WEBNAV_CONTAINER)
+        assert loc.count() > 0
+
     def assert_on_dashboard(self) -> None:
-        # Use BasePage helper for URL + UI confirmation
         self.wait_for_loaded()
         self.assert_url_contains("home")
 

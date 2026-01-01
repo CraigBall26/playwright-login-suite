@@ -1,12 +1,9 @@
-# TC‑304: Logout in One Tab, Session Invalidated in Second Tab
+# TC‑301: Logout in One Tab Invalidates Session in Another
 # -------------------------------------------------------------------
-# Validates how Hudl behaves when a user logs out in one browser tab
-# while another tab is still open. Real coaches often keep multiple
-# Hudl tabs open during film review, messaging, and roster management.
-# Logging out in one tab should invalidate the session everywhere,
-# forcing the second tab back to the login flow.
-#
-# Trello: https://trello.com/c/MgTR72Wy/223-tc304-logout-in-one-tab-session-invalidated-in-second-tab
+# Validates that when a user logs out in one browser tab, any additional
+# tabs open in the same browser context lose their authenticated session
+# and are forced back to the login flow. Coaches frequently work across
+# multiple tabs, so session invalidation must behave consistently.
 
 import pytest
 
@@ -31,6 +28,7 @@ def test_logout_in_one_tab_invalidates_other(
         password=hudl_credentials["password"],
     )
     dashboard_a.wait_for_loaded()
+    dashboard_a.assert_webnav_present()
 
     # Tab B: Open and navigate to dashboard
     tab_b = tab_a.open_new_tab()
@@ -38,6 +36,7 @@ def test_logout_in_one_tab_invalidates_other(
 
     dashboard_b = DashboardPage(tab_b.page)
     dashboard_b.wait_for_loaded()
+    dashboard_b.assert_webnav_present()
 
     # Tab A: Logout
     dashboard_a.logout()

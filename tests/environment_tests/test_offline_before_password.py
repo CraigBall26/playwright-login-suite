@@ -1,13 +1,11 @@
-# TC‑301: Offline Before Password Page
+# TC‑302: Offline Before Password Page
 # -------------------------------------------------------------------
-# This test validates Hudl’s behaviour when the user loses network connectivity
-# *before* reaching the password page. Coaches hit this scenario when opening
-# the login screen on a bus, in a stadium tunnel, or in rural practice fields
-# where signal drops suddenly. After submitting their email, Auth0 should fail
-# gracefully and the password page should never load.
-#
-# Trello: https://trello.com/c/0n7PuK9K/219-tc301-offline-mode-login-attempt
-
+# Validates Hudl’s behaviour when the user loses network connectivity
+# *before* reaching the password page. Coaches hit this scenario when
+# opening the login screen on a bus, in a stadium tunnel, or in rural
+# practice fields where signal drops suddenly. After submitting their
+# email, Auth0 should fail gracefully and the password page should never
+# load.
 
 from typing import Any
 
@@ -45,7 +43,6 @@ def test_offline_before_password(
             password_page.wait_for_loaded(timeout=5000)
 
     finally:
-        # Restore network and routing for teardown.
-        # This prevents cross‑test contamination
+        # Restore network state to avoid cross‑test contamination.
         page.context.set_offline(False)
         page.context.unroute("**/*")
