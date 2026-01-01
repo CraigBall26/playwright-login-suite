@@ -80,7 +80,7 @@ def fresh_page(fresh_context):
 
 
 # ---------------------------------------------------------------------------
-# CREDENTIAL FIXTURE (hidden in terminal output)
+# CREDENTIAL FIXTURE (hidden in terminal output for my credentials)
 # ---------------------------------------------------------------------------
 
 
@@ -89,7 +89,7 @@ class HiddenCredentials(dict):
         return "<hidden>"
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def hudl_credentials():
     return HiddenCredentials(
         {
