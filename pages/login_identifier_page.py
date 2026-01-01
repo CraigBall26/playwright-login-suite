@@ -122,19 +122,19 @@ class LoginIdentifierPage(BasePage):
     # Social login interactions ---------------------
 
     def click_google_and_capture(self):
-        with self.page.expect_navigation() as nav:
+        with self.page.expect_request("**google**") as req:
             self.google_button.first.click()
-        return nav.value.url
+        return req.value.url
 
     def click_apple_and_capture(self):
-        with self.page.expect_navigation() as nav:
+        with self.page.expect_request("**apple**") as req:
             self.apple_button.first.click()
-        return nav.value.url
+        return req.value.url
 
     def click_facebook_and_capture(self):
-        with self.page.expect_navigation() as nav:
+        with self.page.expect_request("**facebook**") as req:
             self.facebook_button.first.click()
-        return nav.value.url
+        return req.value.url
 
     # Back navigation -------------------------------
 

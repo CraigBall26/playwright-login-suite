@@ -191,3 +191,14 @@ def randomized_unknown_email(login_data):
     randomized = f"{local}{suffix}@{domain}"
 
     return randomized
+
+
+# To prevent Apple pop ups even in Headless
+@pytest.fixture
+def chromium_page(playwright):
+    browser = playwright.chromium.launch(headless=True)
+    context = browser.new_context()
+    page = context.new_page()
+    yield page
+    context.close()
+    browser.close()

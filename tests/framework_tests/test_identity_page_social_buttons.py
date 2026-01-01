@@ -9,8 +9,8 @@ from pages.login_identifier_page import LoginIdentifierPage
 
 
 @pytest.mark.framework
-def test_identity_page_social_buttons(fresh_page, login_data):
-    page = fresh_page
+def test_identity_page_social_buttons(chromium_page, login_data):
+    page = chromium_page
     identifier = LoginIdentifierPage(page)
 
     # Navigate to the identity page
