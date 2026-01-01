@@ -128,19 +128,7 @@ pytest code/tests/positive_tests/test_login_success.py::test_valid_login
 
 ---
 
-### **7. Optional: Use Makefile shortcuts**
-
-Convenience commands:
-
-```bash
-make test        # run all tests
-make lint        # run Ruff, Black, isort
-make format      # auto-format the codebase
-```
-
----
-
-### **8. Troubleshooting**
+### **7. Troubleshooting**
 
 - **Playwright browsers missing:**  
   ```bash
