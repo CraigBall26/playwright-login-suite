@@ -16,7 +16,7 @@
 # This workflow mirrors the local development workflow as closely as
 # possible, including headed browser execution via xvfb.
 
-name: CI
+name: Hudl Automation CI Pipeline
 
 on:
   push:
