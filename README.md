@@ -33,10 +33,11 @@ I’m an American football fan, which influences how I think about realistic use
 
 ---
 
-## **🚀 Setup & running the tests**
+# **🚀 Setup & running the tests**
 
 This section explains how to install dependencies, configure your environment, and run the test suite locally.  
 Follow the steps below in order.
+<br>
 
 ---
 
@@ -81,7 +82,13 @@ playwright install
 
 ---
 
-### **5. Set your environment variables**
+### **5. Leave the virtual environment**
+
+```bash
+deactivate
+```
+
+### **6. Set your environment variables**
 
 The suite uses environment variables for credentials.  
 No credentials are stored in the repository.
@@ -93,6 +100,8 @@ export HUDL_USERNAME="your-email"
 export HUDL_PASSWORD="your-password"
 ```
 
+(Use single quotes on macOS/Linux if your password contains characters like !, $, &, etc.)
+
 Windows PowerShell:
 
 ```powershell
@@ -103,8 +112,15 @@ setx HUDL_PASSWORD "your-password"
 Restart your terminal after using `setx`.
 
 ---
+### **7. Re‑activate the virtual environment**
 
-### **6. Run the test suite**
+```bash
+source venv/bin/activate   # macOS / Linux
+venv\Scripts\activate      # Windows
+```
+
+
+### **8. Run the test suite**
 
 Run all tests:
 
@@ -135,7 +151,7 @@ pytest code/tests/positive_tests/test_login_success.py::test_valid_login
 
 ---
 
-### **7. Troubleshooting**
+### **9. Troubleshooting**
 
 - **Playwright browsers missing:**  
   ```bash
