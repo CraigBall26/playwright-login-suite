@@ -96,7 +96,7 @@ No credentials are stored in the repository.
 macOS / Linux:
 
 ```bash
-export HUDL_USERNAME="your-email"
+export HUDL_EMAIL="your-email"
 export HUDL_PASSWORD="your-password"
 ```
 
@@ -105,7 +105,7 @@ export HUDL_PASSWORD="your-password"
 Windows PowerShell:
 
 ```powershell
-setx HUDL_USERNAME "your-email"
+setx HUDL_EMAIL "your-email"
 setx HUDL_PASSWORD "your-password"
 ```
 
