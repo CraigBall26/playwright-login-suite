@@ -1,5 +1,5 @@
 # Shared selectors used across multiple pages.
-# Keeps repeated patterns in one place.
+# Centralises repeated UI patterns so page objects stay clean and consistent.
 
 
 class SharedLocators:
@@ -9,12 +9,15 @@ class SharedLocators:
     FORM_ERROR = "[data-qa='form-error'], .form-error, .field-error"
     MODAL = "[data-qa='modal'], .modal, [role='dialog']"
 
-    # Social login buttons (shared across both login steps)
-    GOOGLE_BUTTON = "role=button[name='Continue with Google']"
-    FACEBOOK_BUTTON = "role=button[name='Continue with Facebook']"
-    APPLE_BUTTON = "role=button[name='Continue with Apple']"
+    # Social login buttons
+    GOOGLE_BUTTON = "button[data-provider='google']"
+    APPLE_BUTTON = "button[data-provider='apple']"
+    FACEBOOK_BUTTON = "button[data-provider='facebook']"
 
-    # Footer links (shared across both login steps)
+    # Footer links
     CREATE_ACCOUNT_LINK = "role=link[name='Create Account']"
     PRIVACY_POLICY_LINK = "role=link[name='Privacy Policy']"
     TERMS_OF_SERVICE_LINK = "role=link[name='Terms of Service']"
+
+    # Back navigation (required by identifier + password pages)
+    BACK_BUTTON = "button[data-qa='back-to-identifier'], a[href*='identifier']"

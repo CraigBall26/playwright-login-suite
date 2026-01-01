@@ -17,8 +17,8 @@ def test_valid_login(fresh_page, hudl_credentials, login_data):
 
     # Perform a full valid login using known credentials.
     dashboard = flow.login(
-        hudl_credentials["email"],
-        hudl_credentials["password"],
+        hudl_credentials[2],
+        hudl_credentials["cra"],
     )
 
     # Confirm the dashboard has fully loaded using the canonical sync point.

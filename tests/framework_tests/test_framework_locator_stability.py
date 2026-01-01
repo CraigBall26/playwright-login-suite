@@ -19,8 +19,8 @@ def test_framework_locator_stability(fresh_page, hudl_credentials, login_data):
     identifier.goto(login_data["login_url"])
 
     # Assert Identifier locators exist
-    assert identifier.email_input.count() > 0
-    assert identifier.continue_button.count() > 0
+    assert fresh_page.locator(identifier.email_input).count() > 0
+    assert fresh_page.locator(identifier.continue_button).count() > 0
 
     # Proceed to Password Page
     identifier.submit_identifier(hudl_credentials["email"])
@@ -28,8 +28,8 @@ def test_framework_locator_stability(fresh_page, hudl_credentials, login_data):
     password.wait_for_loaded()
 
     # Assert Password locators exist
-    assert password.password_input.count() > 0
-    assert password.continue_button.count() > 0
+    assert fresh_page.locator(password.password_input).count() > 0
+    assert fresh_page.locator(password.submit_button).count() > 0
 
     # Use the flow to complete login cleanly
     flow = LoginFlow(fresh_page, login_data)

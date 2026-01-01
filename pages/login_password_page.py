@@ -1,90 +1,112 @@
-# Page object for the password step of the login flow.
-# Keeping selectors simple and readable for stability and reviewer clarity.
+# LoginPasswordPage
+# Handles all interactions on the password step.
+# Responsibilities:
+# - entering the password
+# - submitting the password
+# - validating password errors
+# - ensuring the page loads correctly after identifier step
 
-from playwright.sync_api import Page
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 from locators import login_password_locators as L  # noqa: N812
-from locators.shared_locators import SharedLocators as S
+from locators.shared_locators import SharedLocators
 from pages.base_page import BasePage
 
 
 class LoginPasswordPage(BasePage):
-    def __init__(self, page: Page):
+    # Page object for the password entry step.
+    def __init__(self, page):
         super().__init__(page)
 
-        # Core fields
-        self.password_input = page.locator(L.PASSWORD_INPUT)
-        self.continue_button = page.locator(L.CONTINUE_BUTTON)
+        # Core elements
+        self.password_input = L.PASSWORD_INPUT
+        self.submit_button = L.SUBMIT_BUTTON
 
-        # Toggle to show/hide password
-        self.show_password_toggle = page.locator(L.SHOW_PASSWORD_TOGGLE)
+        # Error messages (Auth0 has multiple variants)
+        self.password_error = L.PASSWORD_ERROR
+        self.error_selectors = L.PASSWORD_ERROR_SELECTORS
 
-        # Edit email button (returns user to identifier step)
-        self.edit_email_button = page.locator(L.EDIT_EMAIL_BUTTON)
+        # Optional UI elements
+        self.back_button = SharedLocators.BACK_BUTTON
+        self.edit_email_button = L.EDIT_EMAIL_BUTTON
+
+        # Footer links
+        self.privacy_policy_link = self.page.locator(SharedLocators.PRIVACY_POLICY_LINK)
+        self.terms_of_service_link = self.page.locator(
+            SharedLocators.TERMS_OF_SERVICE_LINK
+        )
 
         # Social login buttons
-        self.google_button = page.locator(S.GOOGLE_BUTTON)
-        self.facebook_button = page.locator(S.FACEBOOK_BUTTON)
-        self.apple_button = page.locator(S.APPLE_BUTTON)
+        self.google_button = self.page.locator(SharedLocators.GOOGLE_BUTTON)
+        self.apple_button = self.page.locator(SharedLocators.APPLE_BUTTON)
+        self.facebook_button = self.page.locator(SharedLocators.FACEBOOK_BUTTON)
 
-        # Links
-        self.create_account_link = page.locator(S.CREATE_ACCOUNT_LINK)
+    # Navigation / load -----------------------------------
 
-    # Ensure the password page is fully loaded before interacting.
-    def wait_for_loaded(self, timeout=5000):
-        # Wait for the password input and continue button. Timeout is adjustable
-        # for slow‑network environment tests.
-        self.wait_for_visible(self.password_input, timeout=timeout)
-        self.wait_for_visible(self.continue_button, timeout=timeout)
+    def wait_for_loaded(self, timeout: int = 5000):
+        # Must raise TimeoutError when offline or blocked.
+        try:
+            self.page.wait_for_selector(self.password_input, timeout=timeout)
+        except Exception:
+            raise PlaywrightTimeoutError("Password page did not load") from None
 
-    # Enter the password and continue to the dashboard.
+    # Core actions -----------------------------------------
+
+    def enter_password(self, password: str):
+        self.wait_and_fill(self.password_input, password)
+
+    def submit(self):
+        self.wait_and_click(self.submit_button)
+
     def submit_password(self, password: str):
-        self.wait_for_visible(self.password_input)
-        self.password_input.fill(password)
-        self.continue_button.click()
+        self.enter_password(password)
+        self.submit()
 
-    # Click the "Edit" button to return to the identifier page.
-    def click_edit_email(self):
-        self.wait_for_visible(self.edit_email_button)
-        self.edit_email_button.click()
+    # Validation helpers -----------------------------------
 
-    # Error assertions
-    def assert_password_error(self):
-        # Try each selector individually
-        for sel in L.PASSWORD_ERROR_SELECTORS:
-            loc = self.page.locator(sel)
-            if loc.count() > 0:
-                self.wait_for_visible(loc)
+    def assert_password_error(self, timeout: int = 2000):
+        for selector in self.error_selectors:
+            if self.is_visible(selector):
                 return
+        raise AssertionError("Expected a password error, but none were visible.")
 
-        # If no error selector matched, assert we are still on the password page.
-        # Auth0 sometimes hides error messages in CI/headless mode.
-        self.wait_for_loaded()
+    def assert_any_password_error(self):
+        for selector in self.error_selectors:
+            if self.is_visible(selector):
+                return
+        raise AssertionError("Expected a password error, but none were visible.")
 
-    # Social login actions
-    def click_google(self):
-        self.google_button.click()
+    # Step assertion ----------------------------------------
 
-    def click_facebook(self):
-        self.facebook_button.click()
+    def assert_still_on_password_step(self, timeout: int = 5000):
+        self.assert_url_contains("password", timeout=timeout)
+        self.wait_for_selector(self.password_input, timeout=timeout)
 
-    def click_apple(self):
-        self.apple_button.click()
+    # Optional navigation -----------------------------------
 
-    # Footer link actions
-    def click_create_account(self):
-        self.create_account_link.click()
+    def click_back_to_identifier(self):
+        loc = self._first_available(self.back_button)
+        loc.click()
+
+    def click_edit_email(self):
+        loc = self._first_available(self.edit_email_button)
+        loc.click()
+
+    # Footer link interactions ------------------------------
 
     def click_privacy_policy(self):
-        self.privacy_policy_link.click()
+        self.privacy_policy_link.first.click()
 
     def click_terms_of_service(self):
-        self.terms_of_service_link.click()
+        self.terms_of_service_link.first.click()
 
-    @property
-    def privacy_policy_link(self):
-        return self.page.locator(S.PRIVACY_POLICY_LINK)
+    # Social login interactions -----------------------------
 
-    @property
-    def terms_of_service_link(self):
-        return self.page.locator(S.TERMS_OF_SERVICE_LINK)
+    def click_google(self):
+        self.google_button.first.click()
+
+    def click_facebook(self):
+        self.facebook_button.first.click()
+
+    def click_apple(self):
+        self.apple_button.first.click()

@@ -1,4 +1,6 @@
-# Locators for the identifier (email) step of the login flow only
+# Locators for the identifier (email) step of the login flow only.
+# These are raw selectors used by LoginIdentifierPage. No logic or methods here.
+
 from locators.shared_locators import SharedLocators
 
 # Inputs
@@ -26,17 +28,7 @@ IDENTIFIER_ERROR_SELECTORS = (
     "p:has-text('email')",
 )
 
-
-@property
-def google_button(self):
-    return self.page.locator(SharedLocators.GOOGLE_BUTTON)
-
-
-@property
-def apple_button(self):
-    return self.page.locator(SharedLocators.APPLE_BUTTON)
-
-
-@property
-def facebook_button(self):
-    return self.page.locator(SharedLocators.FACEBOOK_BUTTON)
+# Social login buttons (shared across both login steps)
+GOOGLE_BUTTON = SharedLocators.GOOGLE_BUTTON
+APPLE_BUTTON = SharedLocators.APPLE_BUTTON
+FACEBOOK_BUTTON = SharedLocators.FACEBOOK_BUTTON

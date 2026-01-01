@@ -17,24 +17,32 @@ from flows.login_flow import LoginFlow
 load_dotenv()
 
 
+# ---------------------------------------------------------------------------
 # BROWSER FIXTURE
 # WebKit avoids Auth0 bot detection.
-# Helps Debug visual tests with --headed option.
+# Helps debug visual tests with --headed option.
 #   - Running normally: headless=True (fast, stable)
 #   - Running with --headed: headless=False (visible browser)
 #   - slow_mo added when headed to watch interactions
+# ---------------------------------------------------------------------------
+
+
 @pytest.fixture(scope="session")
 def browser(playwright, pytestconfig):
     headed = pytestconfig.getoption("--headed")
 
     browser = playwright.webkit.launch(
-        headless=not headed,  # headed=True → visible browser
-        slow_mo=200 if headed else 0,  # slow motion only when debugging
+        headless=not headed,
+        slow_mo=200 if headed else 0,
     )
     return browser
 
 
+# ---------------------------------------------------------------------------
 # AUTHENTICATED CONTEXT (uses storage_state.json)
+# ---------------------------------------------------------------------------
+
+
 @pytest.fixture
 def context(browser):
     return browser.new_context(
@@ -50,7 +58,11 @@ def page(context):
     return context.new_page()
 
 
+# ---------------------------------------------------------------------------
 # FRESH CONTEXT (no storage_state) — used for login tests
+# ---------------------------------------------------------------------------
+
+
 @pytest.fixture
 def fresh_context(browser):
     context = browser.new_context(
@@ -58,8 +70,7 @@ def fresh_context(browser):
         java_script_enabled=True,
     )
     yield context
-    # Ensures clean state per test
-    context.close()
+    context.close()  # Ensures clean state per test
 
 
 # Fresh page for login tests (no session).
@@ -68,14 +79,24 @@ def fresh_page(fresh_context):
     return fresh_context.new_page()
 
 
-# HUDL CREDENTIALS
-# Session-scoped so authenticated_session can depend on it safely.
-@pytest.fixture(scope="session")
+# ---------------------------------------------------------------------------
+# CREDENTIAL FIXTURE (hidden in terminal output)
+# ---------------------------------------------------------------------------
+
+
+class HiddenCredentials(dict):
+    def __repr__(self):
+        return "<hidden>"
+
+
+@pytest.fixture
 def hudl_credentials():
-    return {
-        "email": os.getenv("HUDL_EMAIL"),
-        "password": os.getenv("HUDL_PASSWORD"),
-    }
+    return HiddenCredentials(
+        {
+            "email": os.getenv("HUDL_EMAIL"),
+            "password": os.getenv("HUDL_PASSWORD"),
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -127,7 +148,6 @@ def context_with_session(browser, authenticated_session):
 
 
 def _load_json(relative_path: str):
-    # Helper to load a JSON file from the test_data folder
     base_path = Path(__file__).parent / "test_data"
     file_path = base_path / relative_path
 
@@ -138,46 +158,36 @@ def _load_json(relative_path: str):
 # LOGIN TEST DATA
 @pytest.fixture(scope="session")
 def login_data():
-    # Shared login data (safe synthetic values).
     return _load_json("login/login_data.json")
 
 
 @pytest.fixture(scope="session")
 def invalid_emails():
-    # Invalid email cases.
     return _load_json("login/invalid_emails.json")
 
 
 @pytest.fixture(scope="session")
 def invalid_passwords():
-    # Invalid password cases.
     return _load_json("login/invalid_passwords.json")
 
 
 # ENVIRONMENT TEST DATA
 @pytest.fixture(scope="session")
 def env_urls():
-    # Environment URLs used across tests.
     return _load_json("environment/urls.json")
 
 
 @pytest.fixture(scope="session")
 def env_timeouts():
-    # Timeout values for page loads and waits.
     return _load_json("environment/timeouts.json")
 
 
 @pytest.fixture
 def randomized_unknown_email(login_data):
-    # Generates a randomized email using test data.
     base_email = login_data["valid_but_incorrect_credentials"]["email"]
 
-    # Split into local part + domain
     local, domain = base_email.split("@")
-
-    # Generate a random 3-digit number (100–999)
     suffix = random.randint(100, 999)
-
-    # Insert suffix before @
     randomized = f"{local}{suffix}@{domain}"
+
     return randomized

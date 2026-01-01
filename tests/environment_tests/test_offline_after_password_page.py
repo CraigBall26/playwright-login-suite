@@ -12,7 +12,6 @@
 from typing import Any
 
 import pytest
-from playwright.sync_api import TimeoutError
 
 from flows.login_flow import LoginFlow
 from pages.dashboard_page import DashboardPage
@@ -47,7 +46,7 @@ def test_offline_after_password_page(
         flow.password.submit_password(creds["password"])
 
         # Assert that the dashboard does NOT load.
-        with pytest.raises(TimeoutError):
+        with pytest.raises(AssertionError):
             dashboard_page.wait_for_loaded(timeout=5000)
 
     finally:

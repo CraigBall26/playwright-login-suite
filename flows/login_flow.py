@@ -1,75 +1,114 @@
-# Flow object that orchestrates the full login sequence.
-# Handles identifier submission, password entry, and optional navigation paths.
+# High‑level flow for the login process.
+# Handles:
+# - navigating to the login page
+# - completing identifier and password steps
+# - returning the correct page object at each stage
+# - supporting positive, negative, and environment tests
 
-from playwright.sync_api import Page
-
+from pages.base_page import BasePage
 from pages.dashboard_page import DashboardPage
 from pages.login_identifier_page import LoginIdentifierPage
 from pages.login_password_page import LoginPasswordPage
 
 
 class LoginFlow:
-    def __init__(self, page: Page, login_data: dict):
+    def __init__(self, page, login_data):
         self.page = page
         self.login_data = login_data
 
+        # Page objects used throughout the flow
         self.identifier = LoginIdentifierPage(page)
         self.password = LoginPasswordPage(page)
+        self.dashboard = DashboardPage(page)
 
-        # Restore compatibility with older tests (flow.base.identifier, etc.)
-        self.base = self
+        # BasePage reference (required by framework tests)
+        self.base = BasePage(page)
 
-    # Entry point for tests that start at the login screen
-    def goto_login(self, timeout: int = 5000):
-        self.identifier.goto_login(self.login_data["login_url"])
-        self.identifier.wait_for_loaded(timeout=timeout)
+    # Navigation -----------------------------------
 
-    # Standard login path
-    def login(self, email: str, password: str, timeout: int = 5000) -> DashboardPage:
-        self.goto_login(timeout=timeout)
-        self.identifier.submit_identifier(email)
+    def goto_login(self):
+        self.page.goto(self.login_data["login_url"])
 
-        self.password.wait_for_loaded(timeout=timeout)
-        self.password.submit_password(password)
+    # Full login -----------------------------------
 
-        dashboard = DashboardPage(self.page)
-        dashboard.wait_for_loaded(timeout=timeout)
-        return dashboard
+    def login(self, email: str, password: str):
+        # Navigate to the login page FIRST
+        self.goto_login()
 
-    def edit_identifier_and_attempt_login(
-        self, new_email: str, password: str, timeout: int = 5000
-    ) -> None:
-        # Click Edit to return to identifier step
+        # Identifier step
+        self.identifier.enter_email(email)
+        self.identifier.submit()
+
+        # Password step
+        self.password.wait_for_loaded()
+        self.password.enter_password(password)
+        self.password.submit()
+
+        # Dashboard
+        self.dashboard.wait_for_loaded()
+        return self.dashboard
+
+    # Identifier-only step --------------------------
+
+    def enter_identifier(self, email: str):
+        self.identifier.enter_email(email)
+        self.identifier.submit()
+        return self.password
+
+    # Password-only step ----------------------------
+
+    def enter_password(self, password: str):
+        self.password.wait_for_loaded()
+        self.password.enter_password(password)
+        self.password.submit()
+        return self.dashboard
+
+    # Login expecting failure -----------------------
+
+    def login_expect_failure(self, email: str, password: str):
+        self.identifier.enter_email(email)
+        self.identifier.submit()
+
+        self.password.wait_for_loaded()
+        self.password.enter_password(password)
+        self.password.submit()
+
+        return self.password
+
+    # Edit email + retry login
+    def edit_identifier_and_attempt_login(self, new_email: str, password: str):
+        # Click the "Edit email" link on the password page
         self.password.click_edit_email()
-        self.identifier.wait_for_loaded(timeout=timeout)
 
-        # Submit the corrected identifier
-        self.identifier.submit_identifier(new_email)
+        # Now back on the identifier page
+        self.identifier.wait_for_loaded()
 
-        # Continue login attempt
-        self.password.wait_for_loaded(timeout=timeout)
-        self.password.submit_password(password)
+        # Enter the new (unknown) email
+        self.identifier.enter_email(new_email)
+        self.identifier.submit()
 
-    # Login path after using browser Back from the password page
-    def login_after_browser_back(
-        self, correct_email: str, password: str, timeout: int = 5000
-    ) -> DashboardPage:
-        # Browser back to identifier step
+        # Enter password for the new email
+        self.password.enter_password(password)
+        self.password.submit()
+        return self.password
+
+    # Browser back navigation -----------------------
+
+    def login_after_browser_back(self, correct_email: str, password: str):
         self.page.go_back()
-        self.identifier.wait_for_loaded(timeout=timeout)
 
-        # Submit corrected email
-        self.identifier.submit_identifier(correct_email)
+        self.identifier.wait_for_loaded()
+        self.identifier.enter_email(correct_email)
+        self.identifier.submit()
 
-        # Continue login
-        self.password.wait_for_loaded(timeout=timeout)
-        self.password.submit_password(password)
+        self.password.wait_for_loaded()
+        self.password.enter_password(password)
+        self.password.submit()
 
-        dashboard = DashboardPage(self.page)
-        dashboard.wait_for_loaded(timeout=timeout)
-        return dashboard
+        return self.dashboard
 
-    # Login path after clicking Edit on the password page
+    # Edit email via UI link ------------------------
+
     def login_after_edit(
         self, correct_email: str, password: str, timeout: int = 5000
     ) -> DashboardPage:
@@ -88,10 +127,3 @@ class LoginFlow:
         dashboard = DashboardPage(self.page)
         dashboard.wait_for_loaded(timeout=timeout)
         return dashboard
-
-    # Assertion helpers used by negative tests
-    def assert_not_on_dashboard(self):
-        DashboardPage(self.page).assert_not_on_dashboard()
-
-    def assert_on_dashboard(self):
-        DashboardPage(self.page).assert_on_dashboard()
