@@ -1,52 +1,112 @@
-# CI workflow to keep the project healthy.
-# Tells GitHub to automatically check project whenever push or pull request is made.
-# Ensures code quality with Ruff and runs tests with pytest.
+# CI Pipeline for Hudl Automation Suite
+# -------------------------------------------------------------------
+# This workflow keeps the project healthy by enforcing code quality
+# and validating the stability of the automation framework. It runs
+# two stages:
+#
+# 1. Framework Tests  – fast, stable checks that validate selectors,
+#    page objects, login flow, and core UI structure.
+#
+# 2. Environment Tests – resilience checks that validate behaviour
+#    under offline, slow‑network, and multi‑tab conditions.
+#
+# Framework tests run first. Environment tests only run if the
+# framework layer is green, ensuring fast feedback and clean signals.
+#
+# This workflow mirrors the local development workflow as closely as
+# possible, including headed browser execution via xvfb.
 
 name: CI
 
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
-# Groups all the steps for the workflow.
 jobs:
-  build:
+  # -----------------------------------------------------------------
+  # Job 1: Framework Tests
+  # -----------------------------------------------------------------
+  # Validates the core automation layer: selectors, page objects,
+  # login flow, and dashboard rendering. This is the foundation of
+  # the suite and must pass before any deeper tests run.
+  framework-tests:
     runs-on: ubuntu-latest
 
-    # Individual commands to run as part of the workflow
     steps:
-      # Step 1: Checkout the repository code
+      # Checkout repository code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Install the version of Python the project uses
+      # Use Python 3.12 to match local development
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
-      # Step 3: Install all Python dependencies listed in requirements.txt
-      # Ensures CI has everything needed to run tests and checks.
+      # Install Python dependencies
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: Install Playwright browsers needed for tests
+      # Install Playwright browsers and system dependencies
       - name: Install Playwright browsers
         run: playwright install --with-deps
 
-      # Step 5: Run Ruff with the same strictness as local development
+      # Linting: enforce code quality and formatting
       - name: Ruff lint (strict)
         run: ruff check . --exit-non-zero-on-fix
 
-      # Step 6: Ensure code formatting matches project standards
       - name: Ruff format check
         run: ruff format --check .
 
-      # Step 7: Run the test suite
-      - name: Run tests
+      # Run framework tests in headed mode using xvfb
+      - name: Run framework tests (headed)
         env:
           HUDL_EMAIL: ${{ secrets.HUDL_EMAIL }}
           HUDL_PASSWORD: ${{ secrets.HUDL_PASSWORD }}
-        run: pytest -q
+          PLAYWRIGHT_SPEEDUP: "1"
+        run: |
+          xvfb-run -a pytest -m framework --headed --disable-warnings --maxfail=1
+
+  # -----------------------------------------------------------------
+  # Job 2: Environment Tests
+  # -----------------------------------------------------------------
+  # Runs only if framework tests pass. Validates behaviour under
+  # offline mode, slow networks, and multi‑tab scenarios. These tests
+  # are slower and more brittle by nature, so they run after the
+  # foundation layer is confirmed healthy.
+  environment-tests:
+    runs-on: ubuntu-latest
+    needs: framework-tests
+
+    steps:
+      # Checkout repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Use Python 3.12 to match local development
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Install Python dependencies
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Install Playwright browsers and system dependencies
+      - name: Install Playwright browsers
+        run: playwright install --with-deps
+
+      # Run environment tests in headed mode using xvfb
+      - name: Run environment tests (headed)
+        env:
+          HUDL_EMAIL: ${{ secrets.HUDL_EMAIL }}
+          HUDL_PASSWORD: ${{ secrets.HUDL_PASSWORD }}
+          PLAYWRIGHT_SPEEDUP: "1"
+        run: |
+          xvfb-run -a pytest -m environment --headed --disable-warnings --maxfail=1
