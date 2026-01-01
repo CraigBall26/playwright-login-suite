@@ -1,9 +1,8 @@
-# TC‑003 — Direct Navigation to /home When Logged Out Redirects to Login
-# ----------------------------------------------------------------------
-# Confirms that a logged‑out user cannot access the authenticated /home route.
-# Hudl should always redirect unauthenticated users back to the login page.
+# TC‑002 — Direct Navigation to /home When Logged Out Redirects to Login
 #
-# Trello: https://trello.com/c/4t6JKEzZ/206-tc-003-direct-navigation-to-home-when-logged-out-redirects-to-login
+# Confirms that a logged‑out user cannot access the authenticated /home route.
+# Any unauthenticated navigation attempt should redirect the user back to the
+# login identifier page, and no dashboard elements should be visible.
 
 import pytest
 
@@ -22,6 +21,6 @@ def test_direct_navigation_redirects_to_login(fresh_page, env_urls):
     login_page = LoginIdentifierPage(page)
     login_page.wait_for_loaded()
 
-    # Assert dashboard elements are not visible.
+    # Dashboard UI should not be visible when unauthenticated.
     dashboard = DashboardPage(page)
-    assert page.locator(dashboard.SSR_WEBNAV_CONTAINER).count() == 0
+    dashboard.assert_not_on_dashboard()

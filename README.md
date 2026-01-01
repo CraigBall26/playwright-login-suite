@@ -235,7 +235,7 @@ Each row includes the test ID, test name, and what the test validates.
 | Test ID | Test Name | Validates |
 |--------|-----------|-----------|
 | **TC‑000** | Valid login | Confirms a user can log in normally and reach the dashboard. Shows the core login flow works end‑to‑end. |
-| **TC‑001** | Correcting email before login | Checks that fixing a mistyped email works as expected. Ensures the flow recovers cleanly from user error. |
+| **TC‑001** | Correcting email before login | Checks that fixing a mistyped email works as expected. Ensures the flow recovers cleanly from user error by using back buttons. |
 | **TC‑002** | Direct navigation redirects to login | Verifies protected pages redirect unauthenticated users. Prevents bypassing the login screen. |
 | **TC‑003** | Login with saved session | Confirms users with an active session skip the login page. Shows session persistence behaves correctly. |
 | **TC‑004** | Logout redirects to homepage | Ensures logging out clears the session and returns the user to login. Confirms session invalidation works. |
