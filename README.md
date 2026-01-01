@@ -2,6 +2,7 @@
 
 Automated tests for the Hudl login flow using Playwright (Python).  
 This repository focuses on a small, well‑organised framework centered on the login experience and related behaviours.
+<br><br>
 
 ---
 
@@ -23,6 +24,8 @@ I’m an American football fan, which influences how I think about realistic use
 - [🔐 Credentials](#-credentials)  
 - [📝 Notes](#-notes)  
 - [🧪 Test coverage](#-test-coverage)
+
+<br><br>
 
 ---
 
@@ -141,6 +144,8 @@ pytest code/tests/positive_tests/test_login_success.py::test_valid_login
 - **Import errors:**  
   Confirm you are running commands from the project root.
 
+  <br><br>
+
 ---
 
 ## **📌 What this project covers**
@@ -148,6 +153,8 @@ pytest code/tests/positive_tests/test_login_success.py::test_valid_login
 - A simple, readable automation framework with minimal complexity.  
 - Positive, negative, environment‑based, and framework tests.  
 - Realistic user interaction scenarios for the Hudl login flow.
+
+<br><br>
 
 ---
 
@@ -182,6 +189,8 @@ code/
 
 Keeping selectors and page behaviours separated reduces duplication and improves maintainability.
 
+<br><br>
+
 ---
 
 ## **🛠️ Tools used**
@@ -193,12 +202,15 @@ Keeping selectors and page behaviours separated reduces duplication and improves
 
 Python was chosen for familiarity and to keep focus on tests rather than learning new syntax.
 
+<br><br>
 ---
 
 ## **🔐 Credentials**
 
 Credentials are loaded from environment variables.  
 No sensitive data is stored in the repository.
+
+<br><br>
 
 ---
 
@@ -208,6 +220,8 @@ No sensitive data is stored in the repository.
 - Tests run against the public Hudl UI.  
 - Selectors are centralised to help keep tests stable.  
 - The framework is designed to be readable and straightforward.
+
+<br><br>
 
 ---
 
