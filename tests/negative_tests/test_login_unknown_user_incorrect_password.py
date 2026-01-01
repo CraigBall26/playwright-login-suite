@@ -1,11 +1,8 @@
-# TC-101: Unknown Email and Incorrect Password (Valid Format)
-# -----------------------------------
-# Verifies that an UNKNOWN user (valid-format email that does not belong
-# to any Hudl account) cannot log in, even when providing a valid-format password.
-#
-# Hudl does not validate whether an email exists during the identifier step.
-#
-# Trello: https://trello.com/c/wilXx8EE/203-login-with-incorrect-but-valid-email-and-password
+# TC‑106: Unknown User + Valid‑Format but Incorrect Password
+# -------------------------------------------------------------------
+# Validates that a valid‑format but unknown email advances to the
+# password page, and that submitting a valid‑format yet incorrect
+# password triggers the appropriate error and prevents login.
 
 import pytest
 
@@ -17,22 +14,18 @@ def test_login_with_unknown_user_and_incorrect_password(
     fresh_page, login_data, randomized_unknown_email
 ):
     flow = LoginFlow(fresh_page, login_data)
-
-    # Start on the login page.
     flow.goto_login()
 
-    # Use a valid-format but UNKNOWN email with a random suffix.
+    # Enter a valid‑format but unknown email and advance to the password page.
     flow.identifier.submit_identifier(randomized_unknown_email)
-
-    # We SHOULD reach the password page.
     flow.password.wait_for_loaded()
 
-    # Submit a valid-format but incorrect password from test_data.
+    # Submit a valid‑format but incorrect password.
     incorrect_password = login_data["valid_but_incorrect_credentials"]["password"]
     flow.password.submit_password(incorrect_password)
 
-    # Assert that the password error appears.
+    # The UI should display the incorrect‑password error.
     flow.password.assert_password_error()
 
-    # Assert no redirect to dashboard.
+    # No redirect to the dashboard should occur.
     flow.base.assert_not_on_dashboard()

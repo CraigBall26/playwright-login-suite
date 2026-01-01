@@ -1,10 +1,7 @@
-# TC‑107: Invalid Domain Email
+# TC‑101: Invalid Domain Email
 # -------------------------------------------------------------------
-# This test validates that the identifier page correctly rejects
-# email addresses with structurally valid local parts but invalid
-# domain components.
-#
-# Trello: https://trello.com/c/lKuD97IY/214-tc-107-invalid-domain-formats
+# Validates that the identifier page rejects email addresses with
+# structurally valid local parts but invalid domain components.
 
 import pytest
 
@@ -17,12 +14,11 @@ def test_invalid_domain_email(page, login_data, email):
     flow = LoginFlow(page, login_data)
     flow.goto_login()
 
-    # Submit the invalid domain email.
     identifier = flow.identifier
     identifier.submit_identifier(email)
 
-    # Assert that we are STILL on the identifier step
+    # The user should remain on the identifier step.
     identifier.assert_still_on_identifier_step()
 
-    # Assert that the appropriate error is shown.
+    # The UI should display the invalid email error message.
     identifier.assert_invalid_email_error()

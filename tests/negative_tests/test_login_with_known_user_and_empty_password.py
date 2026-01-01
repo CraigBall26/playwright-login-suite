@@ -1,9 +1,7 @@
-# TC‑102 — Login with a Known User + Empty Password
+# TC‑107: Known User + Empty Password
 # -------------------------------------------------------------------
-# This test validates that a known Hudl user cannot proceed when the
-# password field is left empty. An error message should show.
-#
-# Trello: https://trello.com/c/BOcH1UcU/209-tc-102-login-with-known-user-and-empty-password
+# Validates that a known Hudl user cannot proceed when the password
+# field is left empty and that the appropriate error message appears.
 
 import pytest
 
@@ -15,21 +13,17 @@ def test_login_with_known_user_and_empty_password(
     fresh_page, hudl_credentials, login_data
 ):
     flow = LoginFlow(fresh_page, login_data)
-
-    # Start on the login page.
     flow.goto_login()
 
-    # Enter a KNOWN user email and continue to password page.
+    # Enter a known user email and advance to the password page.
     flow.identifier.submit_identifier(hudl_credentials["email"])
-
-    # Wait for the password page to fully load.
     flow.password.wait_for_loaded()
 
-    # Submit an EMPTY password.
+    # Submit an empty password.
     flow.password.submit_password("")
 
-    # Assert that the password error appears.
+    # The UI should display the empty‑password error.
     flow.password.assert_password_error()
 
-    # Assert no redirect to dashboard.
+    # No redirect to the dashboard should occur.
     flow.base.assert_not_on_dashboard()

@@ -1,10 +1,8 @@
-# TC‑100 — Login with a Known User + a valid‑format but incorrect password.
-# -----------------------------------
-# Hudl does not validate whether an email exists during the identifier step.
-# Any valid email will advance to the password page. The error
-# only appears after submitting a password.
-#
-# Trello: https://trello.com/c/wilXx8EE/203-login-with-incorrect-but-valid-email-and-password
+# TC‑105: Known User + Valid‑Format but Incorrect Password
+# -------------------------------------------------------------------
+# Validates that a known user can reach the password page with a valid
+# email, but submitting a valid‑format yet incorrect password triggers
+# the appropriate error and prevents login.
 
 import pytest
 
@@ -16,22 +14,18 @@ def test_login_with_known_user_and_incorrect_password(
     fresh_page, hudl_credentials, login_data
 ):
     flow = LoginFlow(fresh_page, login_data)
-
-    # Start on the login page.
     flow.goto_login()
 
-    # Enter a KNOWN user email and continue to password page.
+    # Enter a known user email and advance to the password page.
     flow.identifier.submit_identifier(hudl_credentials["email"])
-
-    # Wait for the password page to fully load.
     flow.password.wait_for_loaded()
 
-    # Submit a valid-format but incorrect password from test_data.
+    # Submit a valid‑format but incorrect password.
     incorrect_password = login_data["valid_but_incorrect_credentials"]["password"]
     flow.password.submit_password(incorrect_password)
 
-    # Assert the error message is shown.
+    # The UI should display the incorrect‑password error.
     flow.password.assert_password_error()
 
-    # Assert no redirect to dashboard.
+    # No redirect to the dashboard should occur.
     flow.base.assert_not_on_dashboard()

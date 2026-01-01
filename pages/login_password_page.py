@@ -43,7 +43,7 @@ class LoginPasswordPage(BasePage):
 
     # Navigation / load -----------------------------------
 
-    def wait_for_loaded(self, timeout: int = 5000):
+    def wait_for_loaded(self, timeout: int = 3000):
         # Must raise TimeoutError when offline or blocked.
         try:
             self.page.wait_for_selector(self.password_input, timeout=timeout)
@@ -78,7 +78,7 @@ class LoginPasswordPage(BasePage):
 
     # Step assertion ----------------------------------------
 
-    def assert_still_on_password_step(self, timeout: int = 5000):
+    def assert_still_on_password_step(self, timeout: int = 3000):
         self.assert_url_contains("password", timeout=timeout)
         self.wait_for_selector(self.password_input, timeout=timeout)
 

@@ -47,7 +47,7 @@ class LoginIdentifierPage(BasePage):
     def load(self):
         self.wait_for_selector(self.email_input)
 
-    def wait_for_loaded(self, timeout: int = 5000):
+    def wait_for_loaded(self, timeout: int = 3000):
         self.wait_for_selector(self.email_input, timeout=timeout)
 
     # Core actions ----------------------------------
@@ -84,7 +84,7 @@ class LoginIdentifierPage(BasePage):
 
     # Step assertion --------------------------------
 
-    def assert_still_on_identifier_step(self, timeout: int = 5000):
+    def assert_still_on_identifier_step(self, timeout: int = 3000):
         self.assert_url_contains("identifier", timeout=timeout)
         self.wait_for_selector(self.email_input, timeout=timeout)
 
