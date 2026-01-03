@@ -36,7 +36,7 @@ I’m an American football fan, which influences how I think about realistic use
 # **🚀 Setup & running the tests**
 
 This section explains how to install dependencies, configure your environment, and run the test suite locally.  
-Follow the steps below in order.
+Follow the steps below in order after opening the terminal.
 <br>
 
 ---
@@ -96,11 +96,10 @@ No credentials are stored in the repository.
 macOS / Linux:
 
 ```bash
-export HUDL_EMAIL="your-email"
-export HUDL_PASSWORD="your-password"
+export HUDL_EMAIL="your-email" 
+export HUDL_PASSWORD="your-password"   # (Use single quotes if your password contains characters like !, $, &, etc.)
 ```
 
-(Use single quotes on macOS/Linux if your password contains characters like !, $, &, etc.)
 
 Windows PowerShell:
 

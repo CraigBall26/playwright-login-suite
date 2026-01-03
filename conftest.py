@@ -1,7 +1,5 @@
-# Setup page/room for tests.
-# Keeps tests clean by handling Playwright lifecycle in one place.
-# Keeps the framework readable.
-# Imports JSON test data files for easy access.
+# Test setup for the login‑flow suite.
+# Keeps things tidy by handling browser setup, sessions, and test data in one place.
 
 import json
 import os
@@ -13,17 +11,14 @@ from dotenv import load_dotenv
 
 from flows.login_flow import LoginFlow
 
-# Load .env file automatically.
+# Load .env values for credentials.
 load_dotenv()
 
 
 # ---------------------------------------------------------------------------
-# BROWSER FIXTURE
-# WebKit avoids Auth0 bot detection.
-# Helps debug visual tests with --headed option.
-#   - Running normally: headless=True (fast, stable)
-#   - Running with --headed: headless=False (visible browser)
-#   - slow_mo added when headed to watch interactions
+# Browser fixture
+# Starts WebKit for all tests.
+# Headless by default, but can show the browser when running with --headed.
 # ---------------------------------------------------------------------------
 
 
@@ -39,7 +34,9 @@ def browser(playwright, pytestconfig):
 
 
 # ---------------------------------------------------------------------------
-# AUTHENTICATED CONTEXT (uses storage_state.json)
+# Authenticated context
+# Opens a browser context using a saved session file.
+# Used for tests that need a logged‑in user.
 # ---------------------------------------------------------------------------
 
 
@@ -59,7 +56,8 @@ def page(context):
 
 
 # ---------------------------------------------------------------------------
-# FRESH CONTEXT (no storage_state) — used for login tests
+# Fresh context (no session)
+# Used for login tests that need a clean state.
 # ---------------------------------------------------------------------------
 
 
@@ -70,17 +68,19 @@ def fresh_context(browser):
         java_script_enabled=True,
     )
     yield context
-    context.close()  # Ensures clean state per test
+    context.close()
 
 
-# Fresh page for login tests (no session).
+# Fresh page for login tests.
 @pytest.fixture
 def fresh_page(fresh_context):
     return fresh_context.new_page()
 
 
 # ---------------------------------------------------------------------------
-# CREDENTIAL FIXTURE (hidden in terminal output for my credentials)
+# Credential fixture
+# Loads Hudl credentials from environment variables.
+# Keeps them hidden in test output.
 # ---------------------------------------------------------------------------
 
 
@@ -100,9 +100,8 @@ def hudl_credentials():
 
 
 # ---------------------------------------------------------------------------
-# SESSION FIXTURES
-# These fixtures create and reuse a valid Hudl session.
-# Speeds up tests by skipping the login UI when not needed.
+# Session fixtures
+# Logs in once, saves the session, and reuses it for faster tests.
 # ---------------------------------------------------------------------------
 
 
@@ -117,7 +116,7 @@ def authenticated_session(browser, login_data, hudl_credentials):
     flow = LoginFlow(page, login_data)
     flow.login(hudl_credentials["email"], hudl_credentials["password"])
 
-    # Wait for dashboard to fully load before saving session.
+    # Wait for dashboard before saving the session.
     from pages.dashboard_page import DashboardPage
 
     dashboard = DashboardPage(page)
@@ -127,12 +126,9 @@ def authenticated_session(browser, login_data, hudl_credentials):
     return "session.json"
 
 
+# Context that loads the saved session.
 @pytest.fixture
 def context_with_session(browser, authenticated_session):
-    """
-    Provides a browser context that automatically loads the saved session.
-    Used for tests that require a logged-in user.
-    """
     return browser.new_context(
         viewport={"width": 1280, "height": 800},
         java_script_enabled=True,
@@ -141,9 +137,9 @@ def context_with_session(browser, authenticated_session):
 
 
 # ---------------------------------------------------------------------------
-# TEST DATA FIXTURES
-# Loads structured JSON files from tests/test_data/.
-# Keeps tests clean by centralising all data.
+# Test data fixtures
+# Loads JSON files from tests/test_data/.
+# Keeps test data in one place.
 # ---------------------------------------------------------------------------
 
 
@@ -155,7 +151,7 @@ def _load_json(relative_path: str):
         return json.load(f)
 
 
-# LOGIN TEST DATA
+# Login test data
 @pytest.fixture(scope="session")
 def login_data():
     return _load_json("login/login_data.json")
@@ -171,7 +167,7 @@ def invalid_passwords():
     return _load_json("login/invalid_passwords.json")
 
 
-# ENVIRONMENT TEST DATA
+# Environment test data
 @pytest.fixture(scope="session")
 def env_urls():
     return _load_json("environment/urls.json")
@@ -182,6 +178,7 @@ def env_timeouts():
     return _load_json("environment/timeouts.json")
 
 
+# Randomised unknown email for negative tests.
 @pytest.fixture
 def randomized_unknown_email(login_data):
     base_email = login_data["valid_but_incorrect_credentials"]["email"]
@@ -193,7 +190,13 @@ def randomized_unknown_email(login_data):
     return randomized
 
 
-# To prevent Apple pop ups even in Headless
+# ---------------------------------------------------------------------------
+# Chromium‑only page fixture
+# Used for tests that must avoid macOS Apple login pop‑ups.
+# Runs Chromium headless for a clean, predictable flow.
+# ---------------------------------------------------------------------------
+
+
 @pytest.fixture
 def chromium_page(playwright):
     browser = playwright.chromium.launch(headless=True)
