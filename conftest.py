@@ -9,10 +9,32 @@ from pathlib import Path
 import pytest
 from dotenv import load_dotenv
 
+from config import get_config
 from flows.login_flow import LoginFlow
 
 # Load .env values for credentials.
 load_dotenv()
+
+
+# ---------------------------------------------------------------------------
+# Environment configuration
+# Controls which environment tests run against.
+# Defaults to production; override with: pytest --env staging
+# ---------------------------------------------------------------------------
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--env",
+        action="store",
+        default="production",
+        help="Target environment: production (default) or staging",
+    )
+
+
+@pytest.fixture(scope="session")
+def env_config(pytestconfig):
+    return get_config(pytestconfig.getoption("--env"))
 
 
 # ---------------------------------------------------------------------------
@@ -156,8 +178,12 @@ def _load_json(relative_path: str):
 
 # Login test data
 @pytest.fixture(scope="session")
-def login_data():
-    return _load_json("login/login_data.json")
+def login_data(env_config):
+    data = _load_json("login/login_data.json")
+    # Override URLs from centralised config so --env is respected.
+    data["base_url"] = env_config.base_url
+    data["login_url"] = env_config.login_url
+    return data
 
 
 @pytest.fixture(scope="session")
@@ -172,13 +198,19 @@ def invalid_passwords():
 
 # Environment test data
 @pytest.fixture(scope="session")
-def env_urls():
-    return _load_json("environment/urls.json")
+def env_urls(env_config):
+    return {
+        "login_page": env_config.login_url,
+        "home_url": env_config.home_url,
+    }
 
 
 @pytest.fixture(scope="session")
-def env_timeouts():
-    return _load_json("environment/timeouts.json")
+def env_timeouts(env_config):
+    return {
+        "page_load": env_config.page_load_timeout,
+        "element_wait": env_config.element_wait_timeout,
+    }
 
 
 # Randomised unknown email for negative tests.
