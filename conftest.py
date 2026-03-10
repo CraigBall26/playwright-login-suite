@@ -240,3 +240,19 @@ def chromium_page(playwright):
     yield page
     context.close()
     browser.close()
+
+
+# ---------------------------------------------------------------------------
+# API fixtures
+# Shared HTTP responses for the API test layer.
+# Fetched once per session so the same request isn't repeated across tests.
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="session")
+def login_page_response(env_config):
+    import requests
+
+    from constants import REQUEST_TIMEOUT
+
+    return requests.get(env_config.login_url, timeout=REQUEST_TIMEOUT)
