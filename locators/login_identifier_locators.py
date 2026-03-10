@@ -1,13 +1,18 @@
 # Locators for the identifier (email) step of the login flow only.
 # These are raw selectors used by LoginIdentifierPage. No logic or methods here.
+# Auth0's Universal Login Page (ULP) varies its markup between releases, so
+# error selectors are listed with a primary value and multiple fallbacks.
 
 from locators.shared_locators import SharedLocators
 
-# Inputs
+# Core inputs -----------------------------------
 EMAIL_INPUT = "role=textbox[name='Email']"
 CONTINUE_BUTTON = "button[data-action-button-primary='true']"
 
-# Errors (identifier-level)
+# Error messages (identifier-level) ------------
+# Auth0 can surface errors as text nodes, data-testid attributes, or class-based
+# containers depending on the ULP version. The tuple below is ordered by
+# specificity — the most reliable selectors first, generic fallbacks last.
 EMPTY_EMAIL_ERROR = "text=Enter an email address"
 INVALID_EMAIL_ERROR = "text=Enter a valid email."
 UNKNOWN_EMAIL_ERROR = "text=We didn't recognize that email"

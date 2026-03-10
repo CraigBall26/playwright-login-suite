@@ -16,6 +16,8 @@ class LogoutFlow:
         # Click the logout button
         self.dashboard.click_logout()
 
-        # Hudl does not navigate to a new URL after logout — it simply clears
-        # the session and reloads the same homepage URL (e.g., / or /en_gb/).
+        # The fan site does not navigate away after logout — the session cookie
+        # is cleared but the URL stays on fan.hudl.com/. Tests that need to
+        # assert session invalidation should check for the absence of the
+        # authenticated user menu rather than waiting for a URL change.
         return self.page

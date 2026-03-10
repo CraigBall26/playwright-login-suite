@@ -1,4 +1,13 @@
 # tools/locator_audit.py
+# ----------------------
+# Offline utility for checking that every locator constant in the codebase
+# still matches at least one real element on the live page.
+#
+# Run manually when selectors change or after a UI update:
+#   python tools/locator_audit.py
+#
+# Exits with code 0 if all selectors match, 2 if any are missing (so CI
+# can optionally run it as a blocking step).
 import sys
 import time
 from importlib import import_module
