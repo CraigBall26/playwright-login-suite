@@ -6,6 +6,8 @@
 # - interacting with footer legal links
 
 
+from playwright.sync_api import expect
+
 from locators import login_identifier_locators as L  # noqa: N812
 from locators.shared_locators import SharedLocators
 from pages.base_page import BasePage
@@ -106,10 +108,10 @@ class LoginIdentifierPage(BasePage):
     # Footer link assertions ------------------------
 
     def assert_privacy_policy_present(self):
-        assert self.privacy_policy_link.count() > 0
+        expect(self.privacy_policy_link.first).to_be_visible()
 
     def assert_terms_of_service_present(self):
-        assert self.terms_of_service_link.count() > 0
+        expect(self.terms_of_service_link.first).to_be_visible()
 
     # Footer link interactions ----------------------
 

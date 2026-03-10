@@ -102,10 +102,10 @@ class LoginPasswordPage(BasePage):
     # Footer link assertions -------------------------------
 
     def assert_privacy_policy_present(self):
-        assert self.privacy_policy_link.count() > 0
+        expect(self.privacy_policy_link.first).to_be_visible()
 
     def assert_terms_of_service_present(self):
-        assert self.terms_of_service_link.count() > 0
+        expect(self.terms_of_service_link.first).to_be_visible()
 
     # Footer link interactions ------------------------------
 
