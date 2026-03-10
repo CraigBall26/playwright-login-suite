@@ -41,8 +41,11 @@ def test_logout_in_one_tab_invalidates_other(
     # Tab A: Logout
     dashboard_a.logout()
 
-    # Tab B: Should now be forced back to login
-    tab_b.page.reload()
+    # Tab B: Navigate to a protected URL — proves the session cookie was
+    # invalidated. A simple reload of fan.hudl.com would land on public fan
+    # content rather than the login page; navigating to /home triggers the
+    # auth check that redirects an unauthenticated user back to login.
+    tab_b.page.goto(f"{login_data['base_url']}/home")
 
     identifier = LoginIdentifierPage(tab_b.page)
-    identifier.wait_for_loaded()
+    identifier.wait_for_loaded(timeout=15000)
