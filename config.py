@@ -21,6 +21,7 @@ class EnvironmentConfig:
     base_url: str
     login_url: str
     home_url: str
+    identity_url: str
     # Timeouts in milliseconds
     page_load_timeout: int
     element_wait_timeout: int
@@ -32,6 +33,7 @@ _CONFIGS: dict[str, EnvironmentConfig] = {
         base_url="https://www.hudl.com",
         login_url="https://www.hudl.com/login",
         home_url="https://www.hudl.com/home",
+        identity_url="https://identity.hudl.com",
         page_load_timeout=15000,
         element_wait_timeout=10000,
     ),
@@ -40,6 +42,7 @@ _CONFIGS: dict[str, EnvironmentConfig] = {
         base_url="https://www.hudl.com",
         login_url="https://www.hudl.com/login",
         home_url="https://www.hudl.com/home",
+        identity_url="https://identity.hudl.com",
         page_load_timeout=20000,
         element_wait_timeout=15000,
     ),
