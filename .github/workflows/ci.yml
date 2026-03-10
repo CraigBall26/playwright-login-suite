@@ -85,16 +85,16 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-webkit-${{ hashFiles('requirements.txt') }}
+          key: playwright-webkit-chromium-${{ hashFiles('requirements.txt') }}
 
       # Install system-level browser dependencies (always needed, not cacheable)
       - name: Install Playwright system dependencies
-        run: playwright install-deps webkit
+        run: playwright install-deps webkit chromium
 
-      # Download browser binary only on cache miss
+      # Download browser binaries only on cache miss
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: playwright install webkit
+        run: playwright install webkit chromium
 
       # Linting: enforce code quality and formatting
       - name: Ruff lint (strict)
