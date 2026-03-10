@@ -220,3 +220,8 @@ __pycache__/
 
 # Ignore environment variable files containing sensitive information.
 .env
+
+# Ignore saved Playwright auth state — these contain live session tokens and
+# must never be committed. Regenerate locally with scripts/save_auth_state.py
+session.json
+storage_state.json
