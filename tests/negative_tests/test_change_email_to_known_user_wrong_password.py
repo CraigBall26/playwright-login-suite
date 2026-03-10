@@ -1,4 +1,4 @@
-# TC‑105 - Known to Known User via "Edit email" (Wrong Password)
+# TC‑108 - Known to Known User via "Edit email" (Wrong Password)
 # -------------------------------------------------------------------
 # This test validates that a user who begins logging in with a known Hudl
 # account can return to the identifier step using the “Edit email” link,
