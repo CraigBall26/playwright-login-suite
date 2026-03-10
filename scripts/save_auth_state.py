@@ -33,8 +33,9 @@ def run():
         # Click the primary Continue button again
         page.locator("button[data-action-button-primary='true']").click()
 
-        # Wait for successful login redirect
-        page.wait_for_url("**/home**", timeout=30000)
+        # Wait for successful login redirect.
+        # Fan accounts land on fan.hudl.com rather than /home.
+        page.wait_for_url("**/fan.hudl.com/**", timeout=30000)
 
         # Save authenticated session
         context.storage_state(path="storage_state.json")

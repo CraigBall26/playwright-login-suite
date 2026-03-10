@@ -38,3 +38,11 @@ line_length = 88
 addopts = "-ra -q"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+pythonpath = ["."]
+markers = [
+    "login: marks login tests",
+    "negative: Negative test scenarios validating error handling.",
+    "environment: Marks tests that simulate environmental conditions (e.g., slow network)",
+    "framework: Framework-level structural tests for locator validation",
+    "positive: marks positive test cases",
+]
