@@ -6,6 +6,8 @@ import os
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 
+from config import get_config
+
 load_dotenv()
 
 HUDL_EMAIL = os.getenv("HUDL_EMAIL")
@@ -13,12 +15,14 @@ HUDL_PASSWORD = os.getenv("HUDL_PASSWORD")
 
 
 def run():
+    cfg = get_config()
+
     with sync_playwright() as p:
         browser = p.webkit.launch(headless=False)
         context = browser.new_context()
 
         page = context.new_page()
-        page.goto("https://www.hudl.com/login")
+        page.goto(cfg.login_url)
 
         # Step 1: enter email
         page.get_by_label("Email").fill(HUDL_EMAIL)
@@ -34,8 +38,7 @@ def run():
         page.locator("button[data-action-button-primary='true']").click()
 
         # Wait for successful login redirect.
-        # Fan accounts land on fan.hudl.com rather than /home.
-        page.wait_for_url("**/fan.hudl.com/**", timeout=30000)
+        page.wait_for_url(f"**{cfg.base_url.replace('https://', '')}/**", timeout=30000)
 
         # Save authenticated session
         context.storage_state(path="storage_state.json")
