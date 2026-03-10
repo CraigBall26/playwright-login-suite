@@ -6,7 +6,6 @@
 # incorrect password. Hudl should correctly reject this attempt and display
 # an appropriate error.
 #
-# Trello: https://trello.com/c/iFdhxQmc/211-tc-104-known-user-edit-email-same-known-user-but-wrong-password
 
 import pytest
 
