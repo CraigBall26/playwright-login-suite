@@ -25,11 +25,14 @@ def test_logout_redirects_to_homepage(fresh_page, hudl_credentials, login_data):
     logout_flow = LogoutFlow(fresh_page)
     logout_flow.logout()
 
-    # Wait for the public homepage to settle.
-    fresh_page.wait_for_load_state("networkidle")
+    # Wait for the page to settle after logout.
+    fresh_page.wait_for_load_state("domcontentloaded")
 
-    # Confirm we are no longer on the dashboard.
-    dashboard.assert_not_on_dashboard()
+    # On the fan site, logout does not change the URL — both logged-in and
+    # logged-out states land on fan.hudl.com. Assert on the nav state instead:
+    # the authenticated user menu should no longer be present.
+    from playwright.sync_api import expect
 
-    # Confirm we are on a Hudl homepage variant.
-    assert fresh_page.url.startswith(login_data["base_url"])
+    expect(
+        fresh_page.locator("div[class*='fanWebnav_globalUserItem']")
+    ).not_to_be_visible(timeout=10000)

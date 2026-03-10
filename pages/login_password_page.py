@@ -7,6 +7,7 @@
 # - ensuring the page loads correctly after identifier step
 
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import expect
 
 from locators import login_password_locators as L  # noqa: N812
 from locators.shared_locators import SharedLocators
@@ -71,16 +72,16 @@ class LoginPasswordPage(BasePage):
         assert self.page.locator(self.submit_button).count() > 0
 
     def assert_password_error(self, timeout: int = 3000):
-        for selector in self.error_selectors:
-            if self.is_visible(selector):
-                return
-        raise AssertionError("Expected a password error, but none were visible.")
-
-    def assert_any_password_error(self):
-        for selector in self.error_selectors:
-            if self.is_visible(selector):
-                return
-        raise AssertionError("Expected a password error, but none were visible.")
+        # Build a combined locator with or_() so Playwright retries the whole
+        # set of selectors automatically until one is visible or timeout fires.
+        # The previous loop used is_visible() (synchronous, no retry) which
+        # could miss an error message that hadn't rendered yet.
+        # .first avoids strict mode violations when Auth0 renders multiple
+        # error containers simultaneously (e.g. empty + policy errors).
+        loc = self.page.locator(self.error_selectors[0])
+        for selector in self.error_selectors[1:]:
+            loc = loc.or_(self.page.locator(selector))
+        expect(loc.first).to_be_visible(timeout=timeout)
 
     # Step assertion ----------------------------------------
 

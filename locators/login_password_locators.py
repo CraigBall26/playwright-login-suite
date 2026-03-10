@@ -14,21 +14,17 @@ EDIT_EMAIL_BUTTON = "[data-link-name='edit-username']"
 
 # Error selectors with fallback logic
 PASSWORD_ERROR_SELECTORS = (
-    # MOST COMMON / FASTEST MATCH FIRST
-    "text=/enter your password/i",
-    "#error-cs-password-required",
-    # Incorrect-password variants
-    "div.c4de1c3f0.c040bb180:has-text('incorrect')",
-    "div.c092c43cb:has-text('incorrect')",
+    # Primary — Auth0 ULP error span, present for incorrect password.
+    "span.ulp-input-error-message",
+    # Empty password — Auth0 shows this in a div rather than a span.
+    "text=Enter your password",
+    # Generic ULP error containers covering both cases.
+    ".ulp-error-info",
+    "span[class*='error-message']",
+    # Broader fallbacks retained for resilience against Auth0 UI changes.
     "[data-testid='login-error']",
     ".auth0-global-message-error",
-    ".alert-error",
-    # Unknown-user variants
-    "div.auth0-global-message.auth0-global-message-error",
-    "[data-testid='error']",
-    # Fallbacks
     "div[class*='error']:has-text('incorrect')",
-    "p:has-text('We can')",
     "[data-qa='error-message']",
 )
 

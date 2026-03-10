@@ -1,4 +1,4 @@
-# TC‑302: Offline After Password Page
+# TC‑303: Offline After Password Page
 # -------------------------------------------------------------------
 # This test validates Hudl’s behaviour when the user loses network connectivity
 # *after* reaching the password page. This scenario happens when a coach enters
@@ -6,7 +6,6 @@
 # they’re about to enter their password. Auth0 should fail gracefully and the
 # dashboard should never load.
 #
-# Trello: https://trello.com/c/0n7PuK9K/220-tc302-offline-after-password-page
 
 
 from typing import Any

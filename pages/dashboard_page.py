@@ -1,9 +1,13 @@
 # Page Objects for the dashboard page after a successful login.
 # Responsibilities:
-# - confirming the authenticated dashboard has loaded
-# - providing stable selectors for SSR WebNav
+# - confirming the authenticated fan.hudl.com page has loaded
+# - providing stable selectors for the fan site nav
 # - supporting logout flows and session tests
 # - ensuring negative tests can reliably detect non-dashboard states
+
+import re
+
+from playwright.sync_api import expect
 
 from locators.dashboard_locators import (
     LOGOUT_BUTTON,
@@ -21,22 +25,21 @@ class DashboardPage(BasePage):
     USER_MENU_DROPDOWN = USER_MENU_DROPDOWN
     LOGOUT_BUTTON = LOGOUT_BUTTON
 
-    def wait_for_loaded(self, timeout=5000):
-        # Use BasePage fallback logic so SSR variants are handled correctly.
+    def wait_for_loaded(self, timeout=15000):
+        # The OIDC callback chain (hudl.com → identity → fan.hudl.com) takes
+        # several seconds. Confirm the URL has settled before asserting on the
+        # nav — using expect() so Playwright retries rather than waiting for a
+        # load event (the fan site SPA does not reliably fire one).
+        expect(self.page).to_have_url(
+            re.compile(r"fan\.hudl\.com", re.IGNORECASE), timeout=timeout
+        )
         self.wait_for_selector(self.SSR_WEBNAV_CONTAINER, timeout=timeout)
 
     def open_user_menu(self):
-        # Opens the user menu in the SSR WebNav header.
-        if self.page.locator(self.USER_MENU_BUTTON).is_visible():
-            self.page.click(self.USER_MENU_BUTTON)
-        else:
-            # Fallback to the initials avatar (hover-activated).
-            self.page.hover(self.USER_MENU_DROPDOWN)
-
-        # Give the menu time to fully render
-        self.page.wait_for_timeout(150)
-
-        # Wait for the logout button to appear.
+        # Click the avatar/display-name container to reveal the dropdown.
+        # Menu items are already in the DOM (CSS show/hide) so we just
+        # wait for the logout link to become visible after the click.
+        self._first_available(self.USER_MENU_BUTTON).first.click()
         self.wait_for_selector(self.LOGOUT_BUTTON)
 
     def click_logout(self):
@@ -52,11 +55,15 @@ class DashboardPage(BasePage):
 
     def assert_on_dashboard(self) -> None:
         self.wait_for_loaded()
-        self.assert_url_contains("home")
+        # Fan accounts land on fan.hudl.com; team accounts on /home.
+        pattern = re.compile(r"fan\.hudl\.com|/home", re.IGNORECASE)
+        expect(self.page).to_have_url(pattern)
 
     def assert_not_on_dashboard(self) -> None:
-        # Negative login tests rely on UI absence
-        assert self.any_dashboard_element_present() is False
+        # Use the URL-based check from BasePage. Checking for element absence
+        # is unreliable — Auth0 login pages also contain header elements which
+        # would cause a false positive with a broad element selector.
+        super().assert_not_on_dashboard()
 
     # Helper for slow-load scenarios
     def wait_for_loaded_slow(self):

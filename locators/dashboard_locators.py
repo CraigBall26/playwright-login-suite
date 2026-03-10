@@ -1,30 +1,23 @@
 # Dashboard Locators
 # ------------------
-# Provides a stable chain of selectors for detecting the real Hudl dashboard
-# after a successful login. These selectors are intentionally broad enough to
-# survive SSR variants and UI experiments while remaining specific to the
-# authenticated Hudl environment.
+# Selectors for the fan.hudl.com post-login page.
+# The account used for this suite is a fan account, which lands on
+# fan.hudl.com after login rather than the team dashboard.
+#
+# The fan site nav uses CSS module class names (fanWebnav_*). The partial
+# class matches below are intentionally broad so they survive hash changes
+# in the CSS module suffix.
 
-# Primary WebNav selector — kept for documentation, but not relied upon
-SSR_WEBNAV_PRIMARY = (
-    "#ssr-webnav > div > div.hui-webnav__grid.hui-navcontainer > "
-    "nav.hui-webnav__grid-col--onewhole.hui-globalnav."
-    "uni-env--dark.uni-environment--dark > "
-    "div:nth-child(2)"
-)
+# Primary nav container — always present on authenticated fan pages.
+FAN_WEBNAV_CONTAINER = "header[class*='fanWebnav_navbar']"
 
-# Fallback WebNav selectors — broad enough to match all SSR variants
-SSR_WEBNAV_FALLBACK = "nav, header, [data-qa='global-nav']"
+# User menu trigger — the avatar + display name container.
+# Clicking it reveals the dropdown menu items (CSS show/hide, not dynamic).
+USER_MENU_BUTTON = "div[class*='fanWebnav_globalUserItem']"
 
-# Option B: Welcome‑Home dashboard variant
-# This nav is unique, stable, and strict‑mode‑safe.
-SSR_WEBNAV_CONTAINER = "nav.hui-globalnav"
+# Logout link — stable data-qa-id attribute inside the user dropdown.
+LOGOUT_BUTTON = "a[data-qa-id='hui-logout']"
 
-# User menu button (we just check for visibility)
-USER_MENU_BUTTON = "button[data-qa='webnav-user-menu']"
-
-# Logout button inside the user menu
-LOGOUT_BUTTON = "div.hui-globalusermenu a[data-qa-id='webnav-usermenu-logout']"
-
-# Menu dropdown trigger (the initials avatar)
-USER_MENU_DROPDOWN = "h5.uni-avatar__initials--user"
+# Aliases used by DashboardPage for backwards compatibility.
+SSR_WEBNAV_CONTAINER = FAN_WEBNAV_CONTAINER
+USER_MENU_DROPDOWN = USER_MENU_BUTTON

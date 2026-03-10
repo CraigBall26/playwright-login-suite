@@ -1,4 +1,5 @@
-# TC‑004 — Correcting Email Before Login (Back Navigation Works)
+# TC‑001 — Correcting Email Before Login (Back Navigation Works)
+#
 # Validates that a user can correct their email address before completing the
 # login flow. Two navigation paths are covered:
 #   1. Using the browser Back button.

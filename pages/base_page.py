@@ -40,11 +40,11 @@ class BasePage:
 
     # Waiting helpers ------------------------------
 
-    def wait_for_visible(self, locator, timeout: int = 5000):
+    def wait_for_visible(self, locator, timeout: int = 3000):
         expect(locator).to_be_visible(timeout=timeout)
         return locator
 
-    def wait_for_attached(self, locator, timeout: int = 5000):
+    def wait_for_attached(self, locator, timeout: int = 3000):
         expect(locator).to_be_attached(timeout=timeout)
         return locator
 
@@ -55,19 +55,19 @@ class BasePage:
 
     # Interaction helpers --------------------------
 
-    def wait_and_click(self, selector: str, timeout: int = 5000):
+    def wait_and_click(self, selector: str, timeout: int = 3000):
         loc = self._first_available(selector)
         expect(loc).to_be_visible(timeout=timeout)
         loc.click()
 
-    def wait_and_fill(self, selector: str, value: str, timeout: int = 5000):
+    def wait_and_fill(self, selector: str, value: str, timeout: int = 3000):
         loc = self._first_available(selector)
         expect(loc).to_be_visible(timeout=timeout)
         loc.fill(value)
 
     # Visibility helpers ---------------------------
 
-    def is_visible(self, selector: str, timeout: int = 1000) -> bool:
+    def is_visible(self, selector: str, timeout: int = 2000) -> bool:
         loc = self._first_available(selector)
         try:
             expect(loc).to_be_visible(timeout=timeout)
@@ -81,24 +81,25 @@ class BasePage:
 
     # URL helpers ----------------------------------
 
-    def assert_url_contains(self, text: str, timeout: int = 5000):
+    def assert_url_contains(self, text: str, timeout: int = 3000):
         # Regex-safe substring match
         pattern = re.compile(re.escape(text), re.IGNORECASE)
         expect(self.page).to_have_url(pattern, timeout=timeout)
 
-    def assert_url_is(self, url: str, timeout: int = 5000):
+    def assert_url_is(self, url: str, timeout: int = 3000):
         expect(self.page).to_have_url(url, timeout=timeout)
 
     # Dashboard helpers ----------------------------
 
-    def assert_not_on_dashboard(self, timeout: int = 5000):
-        # Dashboard URLs always contain /home or /dashboard
-        pattern = re.compile(r"/home|/dashboard", re.IGNORECASE)
+    def assert_not_on_dashboard(self, timeout: int = 3000):
+        # Authenticated state lands on fan.hudl.com or hudl.com/home.
+        pattern = re.compile(r"fan\.hudl\.com|/home|/dashboard", re.IGNORECASE)
         expect(self.page).not_to_have_url(pattern, timeout=timeout)
 
     def wait_for_logged_in(self, timeout: int = 10000):
-        # Authenticated URLs always contain /home or /dashboard
-        pattern = re.compile(r"/home|/dashboard", re.IGNORECASE)
+        # Fan account lands on fan.hudl.com after login.
+        # Team accounts land on hudl.com/home — pattern covers both.
+        pattern = re.compile(r"fan\.hudl\.com|/home|/dashboard", re.IGNORECASE)
         expect(self.page).to_have_url(pattern, timeout=timeout)
         expect(self.page.locator("nav, header")).to_be_visible(timeout=timeout)
 

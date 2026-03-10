@@ -1,4 +1,5 @@
 # TC‑001 — Valid Login
+#
 # Confirms that a user with correct credentials can complete the full login flow
 # and reach a fully loaded DashboardPage. Uses the LoginFlow wrapper to keep the
 # test readable and aligned with real user behaviour.
