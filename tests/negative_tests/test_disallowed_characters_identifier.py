@@ -6,10 +6,12 @@
 import pytest
 
 from flows.login_flow import LoginFlow
-from test_data.login.invalid_emails import INVALID_EMAIL_DISALLOWED_CHARS
+from test_data import load_json
+
+_emails = load_json("login/invalid_emails.json")
 
 
-@pytest.mark.parametrize("email", INVALID_EMAIL_DISALLOWED_CHARS)
+@pytest.mark.parametrize("email", _emails["disallowed_chars"])
 def test_disallowed_characters_identifier(page, login_data, email):
     flow = LoginFlow(page, login_data)
     flow.goto_login()

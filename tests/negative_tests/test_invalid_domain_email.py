@@ -6,10 +6,12 @@
 import pytest
 
 from flows.login_flow import LoginFlow
-from test_data.login.invalid_emails import INVALID_EMAIL_DOMAINS
+from test_data import load_json
+
+_emails = load_json("login/invalid_emails.json")
 
 
-@pytest.mark.parametrize("email", INVALID_EMAIL_DOMAINS)
+@pytest.mark.parametrize("email", _emails["domains"])
 def test_invalid_domain_email(page, login_data, email):
     flow = LoginFlow(page, login_data)
     flow.goto_login()

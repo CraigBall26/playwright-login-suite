@@ -7,10 +7,12 @@
 import pytest
 
 from flows.login_flow import LoginFlow
-from test_data.login.invalid_emails import INVALID_EMAIL_FORMATS
+from test_data import load_json
+
+_emails = load_json("login/invalid_emails.json")
 
 
-@pytest.mark.parametrize("case,email", INVALID_EMAIL_FORMATS.items())
+@pytest.mark.parametrize("case,email", _emails["formats"].items())
 def test_invalid_email_format(page, login_data, case, email):
     flow = LoginFlow(page, login_data)
     flow.goto_login()
