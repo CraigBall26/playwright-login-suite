@@ -191,11 +191,6 @@ def invalid_emails():
     return _load_json("login/invalid_emails.json")
 
 
-@pytest.fixture(scope="session")
-def invalid_passwords():
-    return _load_json("login/invalid_passwords.json")
-
-
 # Randomised unknown email for negative tests.
 @pytest.fixture
 def randomized_unknown_email(login_data):
