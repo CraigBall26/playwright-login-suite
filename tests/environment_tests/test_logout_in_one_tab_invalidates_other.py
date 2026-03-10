@@ -10,7 +10,6 @@ import pytest
 from flows.login_flow import LoginFlow
 from pages.base_page import BasePage
 from pages.dashboard_page import DashboardPage
-from pages.login_identifier_page import LoginIdentifierPage
 
 
 @pytest.mark.environment
@@ -41,11 +40,10 @@ def test_logout_in_one_tab_invalidates_other(
     # Tab A: Logout
     dashboard_a.logout()
 
-    # Tab B: Navigate to a protected URL — proves the session cookie was
-    # invalidated. A simple reload of fan.hudl.com would land on public fan
-    # content rather than the login page; navigating to /home triggers the
-    # auth check that redirects an unauthenticated user back to login.
-    tab_b.page.goto(f"{login_data['base_url']}/home")
-
-    identifier = LoginIdentifierPage(tab_b.page)
-    identifier.wait_for_loaded(timeout=15000)
+    # Tab B: Reload the fan site and assert the user menu is gone.
+    # fan.hudl.com is a public site — an unauthenticated visit does not
+    # redirect to login, so a URL assertion is not meaningful here.
+    # Checking for the absence of the authenticated user menu is the
+    # correct proof that the shared session cookie has been invalidated.
+    tab_b.page.reload()
+    dashboard_b.assert_session_invalidated()

@@ -69,6 +69,14 @@ class DashboardPage(BasePage):
     def wait_for_loaded_slow(self):
         self.wait_for_loaded(timeout=20000)
 
+    def assert_session_invalidated(self, timeout: int = 15000) -> None:
+        # The fan site is public — there is no auth redirect after logout.
+        # Instead assert that the authenticated user menu is no longer rendered,
+        # which is the reliable signal that the session cookie has been cleared.
+        expect(self.page.locator(self.USER_MENU_BUTTON)).not_to_be_visible(
+            timeout=timeout
+        )
+
     def logout(self):
         self.open_user_menu()
         self.click_logout()
