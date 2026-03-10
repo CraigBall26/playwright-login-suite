@@ -19,11 +19,12 @@ A focused automation suite for Hudl's login flow, built with **Playwright** and 
 
 ```
 tests/
-  positive_tests/       # TC-001–006  happy path flows
-  negative_tests/       # TC-100–109  validation and error states
-  framework_tests/      # TC-200–202  locator and component checks
-  environment_tests/    # TC-300–304  offline, slow network, multi-tab
-  api_tests/            # TC-400–410  HTTP-level smoke tests (no browser)
+  api/                        # TC-400–410  HTTP-level smoke tests (no browser)
+  ui/
+    positive/               # TC-001–006  happy path flows
+    negative/               # TC-100–109  validation and error states
+    framework/              # TC-300–302  locator and component checks
+    environment/            # TC-200–204  offline, slow network, multi-tab
 ```
 
 See [TEST_PLAN.md](TEST_PLAN.md) for the full list of test cases.
@@ -103,11 +104,11 @@ pytest
 
 Run a specific group:
 ```bash
-pytest tests/positive_tests
-pytest tests/negative_tests
-pytest tests/environment_tests
-pytest tests/framework_tests
-pytest tests/api_tests
+pytest tests/api
+pytest tests/ui/positive
+pytest tests/ui/negative
+pytest tests/ui/framework
+pytest tests/ui/environment
 ```
 
 Run by marker:
@@ -121,12 +122,12 @@ pytest -m environment
 
 Run a single test file:
 ```bash
-pytest tests/positive_tests/test_valid_login.py
+pytest tests/ui/positive/test_valid_login.py
 ```
 
 Run a single test by node ID:
 ```bash
-pytest tests/positive_tests/test_valid_login.py::test_valid_login
+pytest tests/ui/positive/test_valid_login.py::test_valid_login
 ```
 
 Other useful flags:
