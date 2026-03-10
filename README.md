@@ -30,36 +30,87 @@ See [TEST_PLAN.md](TEST_PLAN.md) for the full list of test cases.
 
 ---
 
-## Setup
+## Setup & Running the Tests
 
-```bash
-git clone https://github.com/CraigBall26/playwright-login-suite.git
-cd playwright-login-suite
-
-python -m venv venv
-source venv/bin/activate
-
-pip install -r requirements.txt
-playwright install
-```
-
-Create a `.env` file in the project root:
-
-```
-HUDL_EMAIL=your@email.com
-HUDL_PASSWORD=yourpassword
-```
+This section explains how to install dependencies, configure your environment, and run the test suite locally.
+Follow the steps below in order after opening the terminal.
 
 ---
 
-## Running Tests
-
-**All tests:**
+**1. Clone the repository**
 ```bash
-pytest --disable-warnings
+git clone https://github.com/CraigBall26/playwright-login-suite.git
+cd playwright-login-suite
 ```
 
-**By marker:**
+**2. Create and activate a virtual environment**
+
+A virtual environment keeps project dependencies isolated.
+```bash
+python3 -m venv venv
+source venv/bin/activate   # macOS / Linux
+venv\Scripts\activate      # Windows
+```
+
+**3. Install Python dependencies**
+
+All required packages are listed in `requirements.txt`.
+```bash
+pip install -r requirements.txt
+```
+
+**4. Install Playwright browsers**
+
+Playwright requires browser binaries to run tests.
+```bash
+playwright install
+```
+
+**5. Leave the virtual environment**
+```bash
+deactivate
+```
+
+**6. Set your environment variables**
+
+The suite uses environment variables for credentials. No credentials are stored in the repository.
+
+macOS / Linux:
+```bash
+export HUDL_EMAIL='your-email'
+export HUDL_PASSWORD='your-password'   # Use single quotes if your password contains !, $, &, etc.
+```
+
+Windows PowerShell:
+```powershell
+setx HUDL_EMAIL "your-email"
+setx HUDL_PASSWORD "your-password"
+```
+> Restart your terminal after using `setx`.
+
+**7. Re-activate the virtual environment**
+```bash
+source venv/bin/activate   # macOS / Linux
+venv\Scripts\activate      # Windows
+```
+
+**8. Run the test suite**
+
+Run all tests:
+```bash
+pytest
+```
+
+Run a specific group:
+```bash
+pytest tests/positive_tests
+pytest tests/negative_tests
+pytest tests/environment_tests
+pytest tests/framework_tests
+pytest tests/api_tests
+```
+
+Run by marker:
 ```bash
 pytest -m api           # HTTP-layer checks only (fast, no browser)
 pytest -m positive
@@ -68,20 +119,35 @@ pytest -m framework
 pytest -m environment
 ```
 
-**Headed mode (local debugging):**
+Run a single test file:
 ```bash
-pytest --headed -m positive
+pytest tests/positive_tests/test_valid_login.py
 ```
 
-**Against staging:**
+Run a single test by node ID:
 ```bash
-pytest --env staging
+pytest tests/positive_tests/test_valid_login.py::test_valid_login
 ```
 
-**Stop on first failure:**
+Other useful flags:
 ```bash
-pytest --maxfail=1
+pytest --headed -m positive    # show the browser window
+pytest --env staging           # run against staging
+pytest --maxfail=1             # stop on first failure
 ```
+
+**9. Troubleshooting**
+
+*Playwright browsers missing:*
+```bash
+playwright install
+```
+
+*Environment variables not detected:*
+Ensure your terminal session is restarted and the virtual environment is active.
+
+*Import errors:*
+Confirm you are running commands from the project root.
 
 ---
 
