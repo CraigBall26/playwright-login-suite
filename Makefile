@@ -2,7 +2,7 @@
 
 # Run the test suite.
 test:
-    pytest
+    pytest --disable-warnings
 
 # Run Ruff with the same strictness as CI.
 lint:
