@@ -45,4 +45,5 @@ markers = [
     "environment: Marks tests that simulate environmental conditions (e.g., slow network)",
     "framework: Framework-level structural tests for locator validation",
     "positive: marks positive test cases",
+    "api: HTTP-layer smoke tests that run without a browser",
 ]
