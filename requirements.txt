@@ -10,3 +10,4 @@ isort
 pre-commit
 python-dotenv
 pytest-playwright
+requests
