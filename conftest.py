@@ -42,17 +42,20 @@ def browser(playwright, pytestconfig):
 
 @pytest.fixture
 def context(browser):
-    return browser.new_context(
+    ctx = browser.new_context(
         viewport={"width": 1280, "height": 800},
         java_script_enabled=True,
-        storage_state="storage_state.json",
     )
+    yield ctx
+    ctx.close()
 
 
 # Page fixture using the authenticated context.
 @pytest.fixture
 def page(context):
-    return context.new_page()
+    p = context.new_page()
+    yield p
+    p.close()
 
 
 # ---------------------------------------------------------------------------
