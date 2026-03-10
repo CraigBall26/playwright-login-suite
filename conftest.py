@@ -196,23 +196,6 @@ def invalid_passwords():
     return _load_json("login/invalid_passwords.json")
 
 
-# Environment test data
-@pytest.fixture(scope="session")
-def env_urls(env_config):
-    return {
-        "login_page": env_config.login_url,
-        "home_url": env_config.home_url,
-    }
-
-
-@pytest.fixture(scope="session")
-def env_timeouts(env_config):
-    return {
-        "page_load": env_config.page_load_timeout,
-        "element_wait": env_config.element_wait_timeout,
-    }
-
-
 # Randomised unknown email for negative tests.
 @pytest.fixture
 def randomized_unknown_email(login_data):

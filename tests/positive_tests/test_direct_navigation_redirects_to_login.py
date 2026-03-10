@@ -11,11 +11,11 @@ from pages.login_identifier_page import LoginIdentifierPage
 
 
 @pytest.mark.positive
-def test_direct_navigation_redirects_to_login(fresh_page, env_urls):
+def test_direct_navigation_redirects_to_login(fresh_page, env_config):
     page = fresh_page
 
     # Navigate directly to the authenticated /home route while logged out.
-    page.goto(env_urls["home_url"])
+    page.goto(env_config.home_url)
 
     # Confirm we are redirected to the login identifier page.
     login_page = LoginIdentifierPage(page)

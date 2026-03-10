@@ -1,6 +1,4 @@
 {
-    "base_url": "https://www.hudl.com",
-    "login_url": "https://www.hudl.com/login",
     "valid_but_incorrect_credentials": {
         "email": "JustinJefferson@fakehudl.com",
         "password": "RandyMoss123!"
