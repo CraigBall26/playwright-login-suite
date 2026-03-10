@@ -38,8 +38,7 @@ def test_framework_locator_stability(fresh_page, hudl_credentials, login_data):
     flow = LoginFlow(fresh_page, login_data)
     dashboard = flow.login(hudl_credentials["email"], hudl_credentials["password"])
 
-    # Wait for redirect before checking dashboard selectors
-    fresh_page.wait_for_url("**/home", timeout=15000)
+    # Wait for the fan site to load before checking dashboard selectors.
     dashboard.wait_for_loaded()
 
     # Dashboard locators
